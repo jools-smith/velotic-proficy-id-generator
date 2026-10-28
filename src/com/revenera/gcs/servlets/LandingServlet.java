@@ -140,8 +140,6 @@ public class LandingServlet extends HttpServlet {
         .replace(">", "&gt;");
   }
 
-
-
   @Override
   protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
     //noinspection unused
