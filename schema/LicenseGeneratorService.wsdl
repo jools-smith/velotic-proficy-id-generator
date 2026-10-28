@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Document: LicenseGeneratorService.wsdl 
+    Description: Web service to generate liecnsing externaly. -->
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="urn:keygenerator.webservice.external.flexnet.com"	xmlns:xns="urn:com.flexnet.external.type"
+    targetNamespace="urn:keygenerator.webservice.external.flexnet.com">
+    <types>
+        <schema targetNamespace="urn:com.flexnet.external.type" xmlns:xns="urn:com.flexnet.external.type" xmlns="http://www.w3.org/2001/XMLSchema"
+            xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" elementFormDefault="qualified">
+            <include schemaLocation="./LicenseGeneratorService_1.0.xsd" />
+        </schema>
+    </types>
+        
+    <!--==== Begin Webservice Request/Response ====-->    
+    
+    <!-- createVirtualServer -->
+    <message name="pingRequest"><part name="request" element="xns:pingRequest" /></message>
+    <message name="pingResponse"><part name="response" element="xns:pingResponse" /></message>    
+    
+    <message name="validateProductRequest"><part name="product" element="xns:ProductRequest"/></message>
+    <message name="validateLicenseModelRequest"><part name="model" element="xns:LicenseModelRequest"/></message>
+   
+    <message name="generateLicenseRequest"><part name="request" element="xns:GeneratorRequest"/></message>
+    <message name="generateLicenseResponse"><part name="generatedLicense" element="xns:GeneratorResponse"/></message>
+
+    <message name="consolidateFulfillmentsRequest"><part name="fulfillmentRecordset" element="xns:FulfillmentRecordSet"/></message>
+    <message name="consolidateFulfillmentsResponse"><part name="response" element="xns:ConsolidatedLicense"/></message> 
+   
+    <message name="generateLicFilenamesRequest"><part name="fileRec" element="xns:FileNamesRequest"/></message>
+    <message name="generateLicFilenamesResponse"><part name="fileNameResponse" element="xns:LicenseFileDefinitionMap"/></message>
+   
+    <message name="consolidatedLicFilenamesRequest"><part name="clRec" element="xns:ConsolidatedLicenseResquest"/></message>
+    <message name="consolidatedLicFilenamesResponse"><part name="consoldatedFileNames" element="xns:LicenseFileDefinitionMap"/></message>
+   
+    <message name="customHostIdRequest"><part name="hostIdReq" element="xns:HostIdRequest"/></message>
+    <message name="customHostIdResponse"><part name="hostIdRes" element="xns:HostIdResponse"/></message> 
+
+    <message name="status"><part name="response" element="xns:Status" /></message>   
+    <message name="licGeneratorException"><part name="fault" element="xns:licGeneratorException" /></message>    
+    <!--==== End Webservice Request/Response ====-->
+
+    <portType name="LicenseGeneratorServiceInterface">
+        <operation name="ping">
+            <input message="tns:pingRequest"/>
+            <output message="tns:pingResponse"/>
+            <fault message="tns:licGeneratorException" name="licGeneratorException" />
+        </operation>      
+        
+        <operation name="validateProduct">
+            <input message="tns:validateProductRequest" />
+            <output message="tns:status" />
+            <fault message="tns:licGeneratorException" name="licGeneratorException"/>
+        </operation>
+
+        <operation name="validateLicenseModel">
+            <input message="tns:validateLicenseModelRequest"/>
+            <output message="tns:status" />
+            <fault message="tns:licGeneratorException" name="licGeneratorException"/>
+        </operation>
+      
+        <operation name="generateLicense">
+            <input message="tns:generateLicenseRequest" />
+            <output message="tns:generateLicenseResponse" />
+            <fault message="tns:licGeneratorException" name="licGeneratorException"/>
+        </operation>
+        
+        <operation name="consolidateFulfillments">
+            <input message="tns:consolidateFulfillmentsRequest" />
+            <output message="tns:consolidateFulfillmentsResponse" />
+            <fault message="tns:licGeneratorException" name="licGeneratorException"/>
+        </operation>
+      
+      
+        <operation name="generateLicenseFilenames">
+            <input message="tns:generateLicFilenamesRequest" />
+            <output message="tns:generateLicFilenamesResponse" />
+            <fault message="tns:licGeneratorException" name="licGeneratorException"/>
+        </operation>
+      
+        <operation name="generateConsolidatedLicenseFilenames">
+            <input message="tns:consolidatedLicFilenamesRequest" />
+            <output message="tns:consolidatedLicFilenamesResponse" />
+            <fault message="tns:licGeneratorException" name="licGeneratorException"/>
+        </operation>
+        
+        <operation name="generateCustomHostIdentifier">
+            <input message="tns:customHostIdRequest" />
+            <output message="tns:customHostIdResponse" />
+            <fault message="tns:licGeneratorException" name="licGeneratorException"/>
+        </operation>
+      
+    </portType>
+    
+    <binding name="LicenseGeneratorServiceSoapBinding" type="tns:LicenseGeneratorServiceInterface">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        
+        <operation name="ping">
+            <soap:operation soapAction="ping" style="document" />
+            <input><soap:body use="literal" /></input>
+            <output><soap:body use="literal"/></output>
+            <fault name="licGeneratorException" ><soap:fault use="literal" name="licGeneratorException" /></fault>
+        </operation> 
+        
+        <operation name="validateProduct">
+            <soap:operation  soapAction="validateProduct" style="document" />
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+            <fault name="licGeneratorException" ><soap:fault use="literal" name="licGeneratorException" /></fault>
+        </operation>
+
+        <operation name="validateLicenseModel">
+            <soap:operation soapAction="validateLicenseModel" style="document" />
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+            <fault name="licGeneratorException" ><soap:fault use="literal" name="licGeneratorException"/></fault>
+        </operation>
+
+        <operation name="generateLicense">
+            <soap:operation soapAction="generateLicense" style="document" />
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+            <fault name="licGeneratorException"><soap:fault use="literal" name="licGeneratorException"/></fault>         
+        </operation>  
+        
+        <operation name="consolidateFulfillments">
+            <soap:operation soapAction="consolidateFulfillments" style="document" />
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+            <fault name="licGeneratorException"><soap:fault use="literal" name="licGeneratorException"/></fault>
+        </operation>
+      
+        
+        <operation name="generateLicenseFilenames">
+            <soap:operation soapAction="generateLicenseFilenames" style="document" />
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+            <fault name="licGeneratorException"><soap:fault use="literal" name="licGeneratorException"/></fault>        
+        </operation>
+        
+        <operation name="generateConsolidatedLicenseFilenames">
+            <soap:operation soapAction="generateConsolidatedLicenseFilenames" style="document" />
+            <input ><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+            <fault name="licGeneratorException"><soap:fault use="literal" name="licGeneratorException"/></fault>        
+        </operation>
+      
+        <operation name="generateCustomHostIdentifier">
+            <soap:operation  soapAction="generateCustomHostIdentifier" style="document" />
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+            <fault name="licGeneratorException"><soap:fault use="literal" name="licGeneratorException"/></fault>
+        </operation>
+      
+    </binding>
+    
+    
+   <service name="LicenseGeneratorService">
+      <port binding="tns:LicenseGeneratorServiceSoapBinding" name="LicenseGeneratorServicePort">
+            <documentation>External Interface to validate product, license model and generate License </documentation>
+            <soap:address location="http://localhost:8888/flexnet/services/LicenseGeneratorService"/>
+      </port>
+   </service>
+   
+</definitions>

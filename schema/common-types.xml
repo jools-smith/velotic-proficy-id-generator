@@ -1,0 +1,7 @@
+<bindings xmlns="http://java.sun.com/xml/ns/jaxb" version="2.1">
+  <bindings schemaLocation="LicenseGeneratorService_1.0.xsd">
+    <schemaBindings>
+      <package name="com.flexnet.external.type"/>
+    </schemaBindings>
+  </bindings>
+</bindings>

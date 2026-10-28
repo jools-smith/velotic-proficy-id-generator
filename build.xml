@@ -1,0 +1,186 @@
+<?xml version="1.0"?>
+
+<project name="ExtGenSvc" default="build" basedir=".">
+    <description>
+        Web Services build file
+    </description>
+
+    <property environment="env" />
+
+    <!--
+    <property name="BASE" location="." />
+    -->
+    <property name="service-name" value="velotic-id-generator" />
+    <property name="src" location="${basedir}/src" />
+    <property name="build" location="${basedir}/build" />
+    <property name="dist" location="${basedir}/dist" />
+    <property name="webcontent" location="${basedir}/WebContent" />
+    <property name="generated" location="${basedir}/generated" />
+    <property name="generated-src" location="${basedir}/generated/src" />
+    <property name="schema-loc" location="${basedir}/schema" />
+    <property name="warfile" location="${basedir}/${service-name}.war" />
+    <property name="zipped-sources" location="${basedir}/${service-name}.zip" />
+    <property name="repository" location="${basedir}/repository" />
+
+    <property name="build.props" location="build.properties" />
+
+    <path id="licservice.classpath">
+        <fileset dir="${basedir}/WebContent/WEB-INF/lib">
+            <include name="**/*.jar" />
+        </fileset>
+    </path>
+
+    <!-- CLEAN -->
+    <target name="clean" description="clean up">
+        <delete file="${warfile}" />
+        <delete file="${zipped-sources}" />
+        <delete dir="${build}" />
+        <delete dir="${dist}" />
+        <delete dir="${generated-src}" />
+        <delete dir="${generated}" />
+        <delete dir="${repository}" />
+    </target>
+
+    <!-- INIT-BUILDNUMBER -->
+    <target name="init-buildnumber">
+        <!-- If file doesn't exist, create it with build.number=0 -->
+        <touch file="${build.props}" />
+
+        <!-- Load existing build.number if present -->
+        <property file="${build.props}" />
+
+        <!-- Default if missing -->
+        <condition property="build.number" value="0">
+            <not>
+                <isset property="build.number" />
+            </not>
+        </condition>
+
+        <!-- Increment and persist -->
+        <propertyfile file="${build.props}">
+            <entry key="build.number" type="int" operation="+" value="1" pattern="0" />
+        </propertyfile>
+
+        <!-- Reload so ${build.number} is updated in this build -->
+        <property file="${build.props}" />
+    </target>
+
+    <!-- INIT -->
+    <target name="init" depends="clean">
+        <echo message="Using ANT version ${ant.java.version}"/>
+        <echo message="Building in ${basedir}"/>
+        <tstamp/>
+        <mkdir dir="${build}"/>
+        <mkdir dir="${generated-src}"/>
+    </target>
+
+    <!-- WSDL2SRC -->
+    <target name="wsdl2src" depends="init" description="generate source from wsdl">
+        <taskdef name="jaxws"
+                 classname="com.sun.tools.ws.ant.WsImport"
+                 classpathref="licservice.classpath" />
+
+        <jaxws wsdl="${basedir}/schema/IdGeneratorService.wsdl"
+               sourcedestdir="${generated-src}"
+               keep="true"
+               binding="${basedir}/schema/common-types.xml"
+               xnocompile="true">
+
+            <depends file="${basedir}/schema/IdGeneratorService.wsdl" />
+
+            <produces dir="${generated-src}/com/flexnet/external/webservice/idgenerator" />
+
+            <xjcarg value="-Xcollection-setter-injector" />
+        </jaxws>
+
+    </target>
+
+    <!-- COMPILE -->
+    <target name="compile"
+            depends="wsdl2src, init-buildnumber"
+            description="compile the source ">
+
+        <javac srcdir="${generated-src}"
+               destdir="${build}"
+               includeantruntime="false"
+               debug="true"
+               encoding="utf-8" />
+
+        <javac srcdir="${src}"
+               destdir="${build}"
+               includeantruntime="false"
+               debug="true"
+               classpathref="licservice.classpath"
+               encoding="utf-8" />
+
+        <tstamp>
+            <format property="build.timestamp" pattern="yyyy-MM-dd'T'HH:mm:ss'Z'" timezone="UTC" />
+            <format property="build.time" pattern="HH:mm:ss" timezone="UTC" />
+            <format property="build.date" pattern="d MMM yyyy" timezone="UTC" />
+        </tstamp>
+
+        <!-- this copy works -->
+        <echo file="${build}/revenera.properties">
+build.version.major=0
+build.version.minor=1
+build.number=${build.number}
+build.timestamp=${build.timestamp}
+build.date=${build.date}
+build.time=${build.time}
+build.category=GA
+build.username=${user.name}
+app.logging.level=ALL
+app.logging.echo=ON
+app.housekeeping=15
+app.landing.header=Revenera GCS Remote ID Generation Service
+app.landing.title=Velotic ID Generation Service for Proficy
+app.proficy.charset=0123456789ABCDEF
+app.proficy.separator=-
+app.proficy.group-count=4
+app.proficy.group-length=4
+app.proficy.product-lines=PRO,A,B,D
+        </echo>
+    </target>
+
+
+    <!-- BUILD -->
+    <target name="build"
+            depends="compile"
+            description="generate the distribution war">
+        <mkdir dir="${dist}/war" />
+
+        <copy todir="${dist}/war/build/WEB-INF/">
+            <fileset dir="${webcontent}/WEB-INF/" />
+        </copy>
+
+        <copy todir="${dist}/war/build/WEB-INF/classes/">
+            <fileset dir="${build}" />
+        </copy>
+
+        <copy todir="${dist}/war/build/WEB-INF/wsdl/schema">
+            <fileset dir="${schema-loc}" />
+        </copy>
+
+        <!-- 1. Load the file you just built to access major/minor versions -->
+        <property file="${build}/revenera.properties" prefix="versioned"/>
+
+        <!-- 2. Construct the hacky Tomcat parallel deployment name string -->
+        <property name="versioned.warfile"
+                  location="${basedir}/${service-name}##${versioned.build.version.major}.${versioned.build.version.minor}.${versioned.build.number}.war" />
+
+        <!-- 3. Package the jar using the new versioned path property -->
+        <jar jarfile="${versioned.warfile}" basedir="${dist}/war/build/" />
+
+        <!-- 4. Keep a reference for the deploy step if needed -->
+        <property name="final.war.to.deploy" value="${versioned.warfile}"/>
+
+    </target>
+
+    <!-- DEPLOY -->
+    <target name="deploy" depends="build">
+        <move todir="${repository}" file="${final.war.to.deploy}" />
+        <echo message="" />
+        <echo message="http://server:port/revenera-gcs/services/${service-name}" />
+    </target>
+
+</project>

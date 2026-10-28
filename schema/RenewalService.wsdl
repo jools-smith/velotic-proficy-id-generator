@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Document: LicenseGeneratorService.wsdl 
+    Description: Web service to generate liecnsing externaly. -->
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="urn:renewal.webservice.external.flexnet.com" xmlns:xns="urn:com.flexnet.external.type"
+    targetNamespace="urn:renewal.webservice.external.flexnet.com">
+    <types>
+        <schema targetNamespace="urn:com.flexnet.external.type" xmlns:xns="urn:com.flexnet.external.type" xmlns="http://www.w3.org/2001/XMLSchema"
+            xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" elementFormDefault="qualified">
+            <include schemaLocation="./LicenseGeneratorService_1.0.xsd" />
+        </schema>
+    </types>
+        
+    <!--==== Begin Webservice Request/Response ====-->        
+   
+    <message name="pingRequest"><part name="request" element="xns:pingRequest" /></message>
+    <message name="pingResponse"><part name="response" element="xns:pingResponse" /></message>    
+    
+    <message name="renewableEntitlementLineItems"><part name="renewableEntitlementLineItems" element="xns:renewableEntitlementLineItems"/></message>    
+    <message name="renewalResponse"><part name="renewalResponse" element="xns:renewalResponse"/></message>
+
+    <message name="renewalSeviceException"><part name="fault" element="xns:licGeneratorException" /></message>    
+    <!--==== End Webservice Request/Response ====-->
+
+    <portType name="RenewalServiceInterface">
+
+        <operation name="ping">
+            <input message="tns:pingRequest"/>
+            <output message="tns:pingResponse"/>
+            <fault name="renewalSeviceException" message="tns:renewalSeviceException"/>
+        </operation> 
+        
+        <operation name="request">
+            <input message="tns:renewableEntitlementLineItems"/>
+            <output message="tns:renewalResponse"/>
+            <fault name="renewalSeviceException" message="tns:renewalSeviceException"/>
+        </operation>             
+
+    </portType>
+    
+    <binding name="RenewalServiceSoapBinding" type="tns:RenewalServiceInterface">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+        <operation name="ping">
+            <soap:operation soapAction="ping" style="document" />
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+            <fault name="renewalSeviceException" ><soap:fault use="literal" name="renewalSeviceException" /></fault>
+        </operation> 
+        
+        <operation name="request">
+            <soap:operation  soapAction="request" style="document" />
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+            <fault name="renewalSeviceException" ><soap:fault use="literal" name="renewalSeviceException" /></fault>
+        </operation>
+      
+    </binding>
+    
+    
+   <service name="RenewalService">
+      <port binding="tns:RenewalServiceSoapBinding" name="RenewalServicePort">
+            <documentation>External Interface to handle Renewal request </documentation>
+            <soap:address location="http://localhost:8888/flexnet/services/RenewalService"/>
+      </port>
+   </service>
+   
+</definitions>

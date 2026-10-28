@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Document: LicenseGeneratorService.wsdl 
+    Description: Web service to generate liecnsing externaly. -->
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="urn:idgenerator.webservice.external.flexnet.com" xmlns:xns="urn:com.flexnet.external.type"
+    targetNamespace="urn:idgenerator.webservice.external.flexnet.com">
+    <types>
+        <schema targetNamespace="urn:com.flexnet.external.type" xmlns:xns="urn:com.flexnet.external.type" xmlns="http://www.w3.org/2001/XMLSchema"
+            xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" elementFormDefault="qualified">
+            <include schemaLocation="./LicenseGeneratorService_1.0.xsd" />
+        </schema>
+    </types>
+        
+    <!--==== Begin Webservice Request/Response ====-->    
+    
+    <!-- createVirtualServer -->
+    
+    <message name="pingRequest"><part name="request" element="xns:pingRequest" /></message>
+    <message name="pingResponse"><part name="response" element="xns:pingResponse" /></message>    
+    
+    <message name="id"><part name="id" element="xns:Id"/></message>    
+    <message name="fulfillmentRecord"><part name="fulfillmentRecord" element="xns:FulfillmentRecord"/></message>
+    
+    <message name="entitlement"><part name="entitlement" element="xns:Entitlement"/></message>
+    <message name="entitlementLineItem"><part name="entitlementLineItem" element="xns:EntitlementLineItem"/></message>
+    
+    <message name="bulkEntitlement"><part name="bulkEntitlement" element="xns:BulkEntitlement"/></message>    
+    <message name="maintenanceItem"><part name="maintenanceItem" element="xns:MaintenanceItem"/></message>
+    
+    
+    
+    <message name="consolidatedLicenseRecord"><part name="consolidatedLicenseRecord" element="xns:ConsolidatedLicenseRecord"/></message>
+   
+    <message name="idGeneratorException"><part name="fault" element="xns:licGeneratorException" /></message>    
+    <!--==== End Webservice Request/Response ====-->
+
+    <portType name="IdGeneratorServiceInterface">
+
+        <operation name="ping">
+            <input message="tns:pingRequest"/>
+            <output message="tns:pingResponse"/>
+            <fault name="idGeneratorException" message="tns:idGeneratorException"/>
+        </operation> 
+        
+        <operation name="generateEntitlementID">
+            <input message="tns:entitlement"/>
+            <output message="tns:id"/>
+            <fault name="idGeneratorException" message="tns:idGeneratorException"/>
+        </operation> 
+            
+        <operation name="generateLineItemID">
+            <input message="tns:entitlementLineItem"/>
+            <output message="tns:id"/>
+            <fault name="idGeneratorException" message="tns:idGeneratorException"/>
+        </operation> 
+        
+        <operation name="generateWebRegKey">
+            <input message="tns:bulkEntitlement"/>
+            <output message="tns:id"/>
+            <fault name="idGeneratorException" message="tns:idGeneratorException"/>
+        </operation> 
+        
+        <operation name="generateMaintenanceItemID">
+            <input message="tns:maintenanceItem"/>
+            <output message="tns:id"/>
+            <fault name="idGeneratorException" message="tns:idGeneratorException"/>
+        </operation> 
+        
+        <operation name="generateFulfillmentID">
+            <input message="tns:fulfillmentRecord"/>
+            <output message="tns:id"/>
+            <fault name="idGeneratorException" message="tns:idGeneratorException"/>
+        </operation> 
+        
+        <operation name="generateConsolidatedLicenseID">
+            <input message="tns:consolidatedLicenseRecord"/>
+            <output message="tns:id"/>
+            <fault name="idGeneratorException" message="tns:idGeneratorException"/>
+        </operation> 
+    </portType>
+    
+    <binding name="IdGeneratorServiceSoapBinding" type="tns:IdGeneratorServiceInterface">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+        <operation name="ping">
+            <soap:operation soapAction="ping" style="document" />
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+            <fault name="idGeneratorException" ><soap:fault use="literal" name="idGeneratorException" /></fault>
+        </operation> 
+        
+        <operation name="generateEntitlementID">
+            <soap:operation  soapAction="generateEntitlementID" style="document" />
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+            <fault name="idGeneratorException" ><soap:fault use="literal" name="idGeneratorException" /></fault>
+        </operation>
+
+        <operation name="generateLineItemID">
+            <soap:operation soapAction="generateLineItemID" style="document" />
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+            <fault name="idGeneratorException" ><soap:fault use="literal" name="idGeneratorException" /></fault>
+        </operation>
+
+        <operation name="generateWebRegKey">
+            <soap:operation soapAction="generateWebRegKey" style="document" />
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+            <fault name="idGeneratorException"><soap:fault use="literal" name="idGeneratorException" /></fault>         
+        </operation>  
+        
+        <operation name="generateMaintenanceItemID">
+            <soap:operation soapAction="generateMaintenanceItemID" style="document" />
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+            <fault name="idGeneratorException"><soap:fault use="literal" name="idGeneratorException" /></fault>
+        </operation>
+      
+        
+        <operation name="generateFulfillmentID">
+            <soap:operation soapAction="generateFulfillmentID" style="document" />
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+            <fault name="idGeneratorException"><soap:fault use="literal" name="idGeneratorException" /></fault>        
+        </operation>
+        
+        <operation name="generateConsolidatedLicenseID">
+            <soap:operation soapAction="generateConsolidatedLicenseID" style="document" />
+            <input ><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+            <fault name="idGeneratorException"><soap:fault use="literal" name="idGeneratorException" /></fault>        
+        </operation>      
+      
+    </binding>
+    
+    
+   <service name="IdGeneratorService">
+      <port binding="tns:IdGeneratorServiceSoapBinding" name="IdGeneratorServicePort">
+            <documentation>External Interface to generate Ids like entitlement, activation, fulfillment, web-reg-keys, maintenance-item-id </documentation>
+            <soap:address location="http://localhost:8888/flexnet/services/IdGeneratorService"/>
+      </port>
+   </service>
+   
+</definitions>

@@ -1,0 +1,1184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Document : LicenseGenerator.xsd Description: XML schema types for external license generator services -->
+<xs:schema targetNamespace="urn:com.flexnet.external.type" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:com.flexnet.external.type" elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+    <!--========== Begin common types to all requests =============== -->
+    <xs:simpleType name="LicenseFileTypeENC">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="TEXT"/>
+            <xs:enumeration value="BINARY"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="AttributeWhenENC">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="NOT_USED"/>
+            <xs:enumeration value="MODEL_TIME"/>
+            <xs:enumeration value="ENTITLEMENT_TIME"/>
+            <xs:enumeration value="MODEL_TIME_PERCENT"/>
+            <xs:enumeration value="MODEL_UNLIMITED"/>
+            <xs:enumeration value="USE_DEFAULT_VALUE"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="AttributeTypeENC">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="LONGTEXT"/>
+            <xs:enumeration value="TEXT"/>
+            <xs:enumeration value="NUMBER"/>
+            <xs:enumeration value="BOOLEAN"/>
+            <xs:enumeration value="DATE"/>
+            <xs:enumeration value="MULTI_VALUED_TEXT"/>
+        </xs:restriction>
+    </xs:simpleType>    
+
+    <xs:simpleType name="StartDateOptionsENC">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="DEFINE_NOW"/>
+            <xs:enumeration value="DEFINE_AT_FIRST_ACTIVATION"/>
+            <xs:enumeration value="DEFINE_AT_EACH_ACTIVATION"/>
+            <xs:enumeration value="DEFINE_AS_ACTIVATION_DATE_AT_FIRST_ACTIVATION"/>
+            <xs:enumeration value="DEFINE_AS_ACTIVATION_DATE_AT_EACH_ACTIVATION"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="FulfillmentSourceENC">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ONLINE"/>
+            <xs:enumeration value="APPLICATION"/>
+            <xs:enumeration value="LEGACY"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="ActivationTypeENC">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="SHORT_CODE"/>
+            <xs:enumeration value="MANUAL"/>
+            <xs:enumeration value="DEFAULT"/>
+            <xs:enumeration value="PROGRAMMATIC"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    
+    <xs:simpleType name="VersionDateOptionsENC">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="DEFINE_NOW"/>
+            <xs:enumeration value="USE_START_DATE"/>
+            <xs:enumeration value="USE_ACTIVATION_DATE"/>
+            <xs:enumeration value="DEFINE_VERSION_STARTDATE_LATER"/>
+            <xs:enumeration value="DEFINE_VERSION_DATE_LATER"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="HostIdType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="UNKNOWN"/>
+            <xs:enumeration value="UNSUPPORTED"/>
+            <xs:enumeration value="LONGHOSTID"/>
+            <xs:enumeration value="ETHERNET"/>
+            <xs:enumeration value="ANY"/>
+            <xs:enumeration value="USER"/>
+            <xs:enumeration value="DISPLAY"/>
+            <xs:enumeration value="HOSTNAME"/>
+            <xs:enumeration value="STRING"/>
+            <xs:enumeration value="FLEXID7"/>
+            <xs:enumeration value="VSN"/>
+            <xs:enumeration value="INTERNET"/>
+            <xs:enumeration value="INTERNET6"/>
+            <xs:enumeration value="FLEXID9"/>
+            <xs:enumeration value="HOSTDOMAIN"/>
+            <xs:enumeration value="FLEXID6"/>
+            <xs:enumeration value="COMPOSITE"/>
+            <xs:enumeration value="VENDOR"/>
+            <xs:enumeration value="FLEXID10"/>
+            <xs:enumeration value="VM_UUID"/>
+            <xs:enumeration value="AMAZON_EIP"/>
+            <xs:enumeration value="AMAZON_AMI"/>
+            <xs:enumeration value="AMAZON_IID"/>
+            <xs:enumeration value="PUBLISHER_DEFINED"/>
+        </xs:restriction>
+    </xs:simpleType>
+   
+    <xs:simpleType name="EntitlementSupportActionENC">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="RENEWAL"/>
+            <xs:enumeration value="UPGRADE"/>
+            <xs:enumeration value="UPSELL"/>
+            <xs:enumeration value="RENEWING"/>
+            <xs:enumeration value="UPGRADING"/>
+            <xs:enumeration value="UPSELLING"/>
+            <xs:enumeration value="ADDLINEITEMS"/>
+            <xs:enumeration value="NONE"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    
+    <xs:simpleType name="FulfillmentRequestTypeENC">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ACTIVATION"/>
+            <xs:enumeration value="RETURN"/>
+            <xs:enumeration value="REPAIR"/>
+            <xs:enumeration value="REHOST"/>
+            <xs:enumeration value="EMERGENCY"/>
+            <xs:enumeration value="STOPGAP"/>
+            <xs:enumeration value="PUBLISHER_ERROR"/>
+            <xs:enumeration value="SHORT_CODE_ACTIVATION"/>
+            <xs:enumeration value="SHORT_CODE_REPAIR"/>
+            <xs:enumeration value="SHORT_CODE_RETURN"/>
+            <xs:enumeration value="UPGRADE"/>
+            <xs:enumeration value="UPSELL"/>
+            <xs:enumeration value="RENEW"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="EntityStateENC">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="DRAFT"/>
+            <xs:enumeration value="DEPLOYED"/>
+            <xs:enumeration value="INACTIVE"/>
+            <xs:enumeration value="OBSOLETE"/>
+            <xs:enumeration value="TEST"/>
+            <xs:enumeration value="ACTIVE"/>
+            <xs:enumeration value="ON_HOLD"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="FulfillmentLifeCycleStatusENC">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="LIFECYCLE_STATUS_STOPGAP"/>
+            <xs:enumeration value="LIFECYCLE_STATUS_EMERGENCY"/>
+            <xs:enumeration value="LIFECYCLE_STATUS_REHOST"/>
+            <xs:enumeration value="LIFECYCLE_STATUS_RETURN"/>
+            <xs:enumeration value="LIFECYCLE_STATUS_PUBLISHER_ERROR"/>            
+            <xs:enumeration value="LIFECYCLE_STATUS_REPAIR"/>
+            <xs:enumeration value="LIFECYCLE_STATUS_UPGRADE"/>
+            <xs:enumeration value="LIFECYCLE_STATUS_TRANSFER"/>
+            <xs:enumeration value="LIFECYCLE_STATUS_UPSELL"/>
+            <xs:enumeration value="LIFECYCLE_STATUS_RENEW"/>
+            <xs:enumeration value="LIFECYCLE_STATUS_REINSTALL"/>
+            <xs:enumeration value="LIFECYCLE_STATUS_DELETE"/>
+            <xs:enumeration value="MASTER"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!--
+    <xs:complexType name="AttributeWhenENCSet">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="dataAttributeWhenENC" type="tns:AttributeWhenENC"/>
+        </xs:sequence>
+    </xs:complexType>  
+
+    
+
+    <xs:complexType name="EntitlementSupportActionENCSet">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="data" type="tns:EntitlementSupportActionENC"/>
+        </xs:sequence>
+    </xs:complexType>   
+  -->      
+    <xs:complexType name="AttributeSet">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="attributes" type="tns:CustomAttributeDescriptor"/>
+        </xs:sequence>
+    </xs:complexType>   
+    
+    <xs:complexType name="CustomAttribute">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string" />
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="attributes" type="xs:string"/>
+        </xs:sequence>
+   </xs:complexType>
+   
+   <!--
+   
+    <xs:complexType name="CustomAttributeSet">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="attributes" type="tns:CustomAttribute"/>
+        </xs:sequence>
+    </xs:complexType>   
+    
+    -->
+    <xs:complexType name="CustomAttributeDescriptor">
+        <xs:sequence>
+            <xs:element name="whenChoices" type="tns:AttributeWhenENC" nillable="true" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="type" nillable="true" type="tns:AttributeTypeENC"/>
+            <xs:element name="name" nillable="true" type="xs:string"/>
+            <xs:element name="value" nillable="true" type="xs:string"/>
+            <xs:element name="licenseAttribute" nillable="true" type="xs:boolean"/>
+            <xs:element name="required" nillable="true" type="xs:boolean"/>
+            <xs:element name="displayType" nillable="true" type="xs:string"/>    
+        </xs:sequence>
+   </xs:complexType>
+    
+  
+    <xs:complexType name="Entitlement">
+        <xs:sequence>
+            <!-- <xs:element name="activationID" nillable="true" type="xs:string"/> -->
+            <xs:element name="entitlementID" nillable="true" type="xs:string"/>
+            <xs:element name="entitlementType" nillable="true" type="xs:string"/>
+            <xs:element name="shipToEmail" nillable="true" type="xs:string"/>
+            <xs:element name="soldTo" nillable="true" type="tns:OrganizationUnit"/>
+            <xs:element name="shipToAddress" nillable="true" type="xs:string"/>
+            <xs:element name="entitlementState" nillable="true" type="tns:EntityStateENC"/>
+            <xs:element name="draft" nillable="true" type="xs:boolean"/>
+            <xs:element name="deployed" nillable="true" type="xs:boolean"/>
+            <xs:element name="inactive" nillable="true" type="xs:boolean"/>
+            <xs:element name="test" nillable="true" type="xs:boolean"/>
+            <xs:element name="supportActions" nillable="true" maxOccurs="unbounded" minOccurs="0" type="tns:EntitlementSupportActionENC"/>
+            <xs:element name="entChannelPartners" nillable="true" maxOccurs="unbounded" minOccurs="0"  type="tns:ChannelPartner"/>
+            <xs:element name="customAttributes" nillable="true" type="tns:CustomAttribute" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:element name="Entitlement" type="tns:Entitlement" />
+        
+    <xs:complexType name="StringPair">
+        <xs:sequence>
+            <xs:element name="key" nillable="true" type="xs:string"/>
+            <xs:element name="value" nillable="true" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+        <!-- 
+    <xs:complexType name="StringMap">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="item" type="tns:StringMapItem"/>
+        </xs:sequence>
+    </xs:complexType> 
+    
+
+    <xs:complexType name="StringSet">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="dataString" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>   
+      -->
+    <xs:complexType name="Duration">
+        <xs:sequence>
+            <xs:element name="length" nillable="true" type="xs:int"/>
+            <xs:element name="endDate" nillable="true" type="xs:dateTime"/>
+            <xs:element name="GMTEndDate" nillable="true" type="xs:dateTime"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+       <xs:complexType name="LicenseTerm">
+        <xs:sequence>
+            <xs:element name="startDate" nillable="true" type="xs:dateTime"/>        
+            <xs:element name="permanent" nillable="true" type="xs:boolean"/>            
+            <xs:element name="isDuration" nillable="true" type="xs:boolean"/>
+            <xs:element name="duration" nillable="true" type="tns:Duration"/>            
+            <xs:element name="expirationDate" nillable="true" type="xs:dateTime"/>
+            <xs:element name="effectiveExpirationDate" nillable="true" type="xs:dateTime"/>            
+        </xs:sequence>
+   </xs:complexType>
+    
+    <!-- ========== End common types to all requests ===============  -->
+    
+    
+    <!-- ========== Begin Policy types to all requests ===============  -->
+    <xs:complexType name="LicenseHostIdPolicy">
+        <xs:sequence>
+            <xs:element name="isIgnored" nillable="true" type="xs:boolean"/>
+             <xs:element nillable="true" maxOccurs="unbounded" minOccurs="0" name="hostIdTypes" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="LicenseLifecyclePolicy">
+        <xs:sequence>
+            <xs:element name="numOperations" nillable="true" type="xs:int"/>
+            <xs:element name="duration" nillable="true" type="tns:Duration"/>
+            <xs:element name="IsIgnored" nillable="true" type="xs:boolean"/>
+        </xs:sequence>
+    </xs:complexType>   
+   
+    <xs:complexType name="LicenseRedundantServerPolicy">
+        <xs:sequence>
+            <xs:element name="isIgnored" nillable="true" type="xs:boolean"/>
+            <xs:element name="redundant" nillable="true" type="xs:boolean"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="LicenseCancelPolicy">
+        <xs:sequence>
+            <xs:element name="cancelLicense" nillable="true" type="xs:boolean"/>
+            <xs:element name="isIgnored" nillable="true" type="xs:boolean"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ReinstallPolicy">
+        <xs:sequence>
+            <xs:element name="isIgnored" nillable="true" type="xs:boolean"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <!-- ========== End policy types to all requests ===============  -->
+    
+    <!-- ========== Begin Extended Attribute types to all requests ===============  -->
+    <xs:complexType name="ExtendedPropertyMapItem">
+        <xs:sequence>
+        <xs:element name="value" nillable="true" type="tns:ExtendedProperty"/>
+        <xs:element name="key" nillable="true" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="ExtendedPropertyMap">
+        <xs:sequence>
+        <xs:element maxOccurs="unbounded" minOccurs="0" name="item" type="tns:ExtendedPropertyMapItem"/>
+        </xs:sequence>
+    </xs:complexType>
+   
+    <xs:complexType name="ExtendedProperty">
+     <xs:sequence>
+        <xs:element name="value" nillable="true" type="xs:string"/>
+        <xs:element name="metaData" nillable="true" type="tns:ExtendedPropertyMetadata"/>
+     </xs:sequence>
+   </xs:complexType>
+   
+    <xs:complexType name="ExtendedPropertyMetadata">
+        <xs:sequence>
+            <xs:element name="className" nillable="true" type="xs:string"/>
+            <xs:element name="subgroupName" nillable="true" type="xs:string"/>
+            <xs:element name="name" nillable="true" type="xs:string"/>    
+            <xs:element name="type" nillable="true" type="xs:string"/>    
+            <xs:element name="minRangeValue" nillable="true" type="xs:string"/>    
+            <xs:element name="maxRangeValue" nillable="true" type="xs:string"/>
+            <xs:element name="maxLength" nillable="false" type="xs:int"/>
+            <xs:element name="required" nillable="false" type="xs:boolean"/>
+            <xs:element name="hasValidValues" nillable="false" type="xs:boolean"/>
+            <xs:element name="hasRangeValues" nillable="false" type="xs:boolean"/>
+        </xs:sequence>    
+   </xs:complexType>
+   
+    <!-- ========== End  Extended Attribute types to all requests ===============  -->
+    
+    <!-- ========== Begin Error types to all requests ===============  -->
+    
+    <xs:complexType name="svcException">
+        <xs:sequence>
+            <xs:element name="message" nillable="false" type="xs:string"/>
+            <xs:element name="name" nillable="false" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="licGeneratorException" type="tns:svcException" />
+    <!--========== End Error types to all requests ===============  -->
+
+    <!--========== Begin HostId types to all requests =============== -->
+    <xs:complexType name="CustomHostId">
+        <xs:sequence>
+            <xs:element name="hostIdentifier" nillable="true" type="xs:string"/>
+            <xs:element name="LicenseTechnologyName" nillable="true" type="xs:string"/>
+            <xs:element name="HostAttributeValues" nillable="true" maxOccurs="unbounded" minOccurs="0"  type="tns:StringPair"/>
+            
+        </xs:sequence>
+    </xs:complexType>   
+
+       <xs:complexType name="LicenseHostId">
+        <xs:sequence>
+            <xs:element name="uniqueHostName" nillable="true" type="xs:string"/>
+            <xs:element name="uniqueId" nillable="true" type="xs:long"/>
+            <xs:element name="owner" nillable="true" type="tns:OrganizationUnit"/>
+            <xs:element name="licenseTechnology" nillable="true" type="xs:string"/>
+            <xs:element name="licenseTechnologyHostType" nillable="true" type="tns:HostType"/>
+            <xs:element name="hostType" nillable="true" type="xs:string"/>
+            <xs:element name="status" nillable="true" type="xs:string"/>
+        </xs:sequence>
+   </xs:complexType>
+   
+    <xs:element name="HostIdRequest">   
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="HostIdMap" maxOccurs="unbounded" minOccurs="0"  type="tns:StringPair"/>
+                <xs:element name="HostIdType" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    
+    <!--
+    <xs:complexType name="HostTypeSet">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="data" type="tns:HostType"/>
+        </xs:sequence>
+    </xs:complexType>   
+    -->
+   <xs:element name="HostIdResponse" type="xs:string" />
+   
+       <xs:complexType name="HostType">
+        <xs:sequence>
+            <xs:element name="id" nillable="true" type="xs:long"/>
+            <xs:element name="name" nillable="true" type="xs:string"/>
+            <xs:element name="hostIdType" nillable="true" type="tns:HostIdType"/>
+            <xs:element name="defaultHostIdType" nillable="true" type="tns:HostIdType"/>
+            <xs:element name="visibleOnPortal" nillable="true" type="xs:boolean"/>
+            <xs:element name="licenseTechnology" nillable="true" type="xs:string"/>
+            <xs:element name="hostIdentifierGenerator" nillable="true" type="xs:string"/>
+            <xs:element name="hostTypeId" nillable="true" type="xs:long"/>
+        </xs:sequence>
+   </xs:complexType>
+   
+    <!--========== End HostId types to all requests =============== -->
+    
+    <!-- ========== Begin Ping types to all requests ===============  -->
+    
+    <xs:element name="pingRequest">
+        <xs:complexType>
+            <xs:sequence>
+               <xs:element name="str" nillable="false" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="pingResponse">
+        <xs:complexType>
+            <xs:sequence>
+               <xs:element name="str" nillable="false" type="xs:string"/>
+               <xs:element name="processedTime" nillable="false" type="xs:string"/>
+               <xs:element name="info" nillable="true" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!--========== End Ping types to all requests ===============  -->
+
+    <!--========== Begin Prodcut types to all requests ===============  -->
+    
+    <xs:complexType name="FeatureOverride">
+        <xs:sequence>
+            <xs:element name="name" nillable="true" type="xs:string"/>
+            <xs:element name="value" nillable="true" type="xs:string"/>     
+        </xs:sequence>
+    </xs:complexType>
+    
+    
+    <xs:complexType name="Feature">
+        <xs:sequence>
+            <xs:element name="name" nillable="false" type="xs:string"/>
+            <xs:element name="count" nillable="false" type="xs:long"/>    
+            <xs:element name="version" nillable="false" type="xs:string"/>    
+            <xs:element name="descritpion" nillable="true" type="xs:string"/>    
+            <xs:element name="isDateBasedVersion" nillable="true" type="xs:boolean"/>        
+            <xs:element name="featureOverride" nillable="true" maxOccurs="unbounded" minOccurs="0"  type="tns:FeatureOverride"/>    
+        </xs:sequence>
+    </xs:complexType>    
+    
+    <xs:complexType name="SuiteProductInfo">
+        <xs:sequence>
+            <xs:element name="name" nillable="true" type="xs:string"/>
+            <xs:element name="version" nillable="true" type="xs:string"/>
+            <xs:element name="customAttributes" nillable="true" type="tns:CustomAttribute" maxOccurs="unbounded" minOccurs="0" />
+            <xs:element name="quantity" nillable="true" type="xs:int"/>    
+            <xs:element name="packageName" nillable="true" type="xs:string" minOccurs="0" />   
+            <xs:element name="packageVersion" nillable="true" type="xs:string" minOccurs="0" />   
+            <xs:element name="isDateBasedPackageVersion" nillable="true" type="xs:boolean" minOccurs="0" />
+            <xs:element name="packageVersionFormat" nillable="true" type="xs:string" minOccurs="0" />
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="Product">
+        <xs:sequence>
+            <xs:element name="name" nillable="true" type="xs:string"/>
+            <xs:element name="version" nillable="true" type="xs:string"/>
+            <xs:element name="productType" nillable="true" type="xs:string"/>
+            <xs:element name="suite" nillable="false" type="xs:boolean" />
+            <xs:element name="maintenance" nillable="false" type="xs:boolean" />
+            <xs:element name="licensedProduct" nillable="false" type="xs:boolean"/>
+            <xs:element name="needsDatedVersion" nillable="false" type="xs:boolean"/>            
+            <xs:element name="header" nillable="true" type="xs:string" minOccurs="0" />
+            <xs:element name="trailer" nillable="true" type="xs:string" minOccurs="0" />            
+            <xs:element name="productCategory" nillable="true" type="tns:ProductCategory" minOccurs="0" />   
+            <xs:element name="productCategoryAttributesWithValues" nillable="true" maxOccurs="unbounded" minOccurs="0" type="tns:ProductCategoryAttributeValue"/>            
+            <xs:element name="customAttributes" nillable="true" type="tns:CustomAttribute" maxOccurs="unbounded" minOccurs="0" />
+            <xs:element name="packageName" nillable="true" type="xs:string" minOccurs="0" />   
+            <xs:element name="packageVersion" nillable="true" type="xs:string" minOccurs="0" />   
+            <xs:element name="isDateBasedPackageVersion" nillable="true" type="xs:boolean" minOccurs="0" />    
+            <xs:element name="features" nillable="true" type="tns:Feature" minOccurs="0" maxOccurs="unbounded"/> 
+            <xs:element name="quantityPerCopy" nillable="true" type="xs:int"/>    
+            <xs:element name="suiteProductInfo" nillable="true" maxOccurs="unbounded" minOccurs="0"  type="tns:SuiteProductInfo"/>    
+        </xs:sequence>
+    </xs:complexType>
+   
+           
+    <xs:element name="ProductRequest">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="tns:Product">
+                    <xs:sequence>
+                        <xs:element name="partNumbers" nillable="true" maxOccurs="unbounded" minOccurs="0" type="tns:PartNumber"/>
+                        <xs:element name="hostType" nillable="true" type="tns:HostType"/>                        
+                        <xs:element name="headerResourceBundleKey" nillable="true" type="xs:string" minOccurs="0" />
+                        <xs:element name="trailerResourceBundleKey" nillable="true" type="xs:string" minOccurs="0" />
+                        <xs:element name="licenseTechnology" nillable="true" type="tns:LicenseTechnology"/>
+                        <xs:element name="licenseGeneratorConfig" nillable="true" type="tns:LicenseGeneratorConfig" />    
+                        <xs:element name="deployed" nillable="false" type="xs:boolean"/>            
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    
+
+    <xs:complexType name="ProductCategory">
+        <xs:sequence>
+            <xs:element name="id" nillable="true" type="xs:long"/>
+            <xs:element name="name" nillable="true" type="xs:string"/>
+            <xs:element name="productCategoryAttribute" nillable="true" maxOccurs="unbounded" minOccurs="0"  type="tns:ProductCategoryAttribute"/>
+        </xs:sequence>
+   </xs:complexType>
+   
+      
+    <xs:complexType name="ProductCategoryAttributeValue">
+        <xs:sequence>
+            <xs:element name="productCategoryName" nillable="true" type="xs:string"/>
+            <xs:element name="value" nillable="true" type="xs:string"/>
+            <xs:element name="productCategoryAttribute" nillable="true" type="tns:ProductCategoryAttribute"/>    
+        </xs:sequence>
+    </xs:complexType>
+   
+    <xs:complexType name="ProductCategoryAttribute">
+        <xs:sequence>
+            <xs:element name="type" nillable="true" type="xs:string"/>
+            <xs:element name="displayType" nillable="true" type="xs:string"/>
+            <xs:element name="name" nillable="true" type="xs:string"/>    
+            <xs:element name="maxLength" nillable="false" type="xs:int"/>
+            <xs:element name="required" nillable="false" type="xs:boolean"/>
+        </xs:sequence>
+   </xs:complexType>
+   
+   <!--
+  
+    <xs:complexType name="ProductCategoryAttributeValueSet">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="data" type="tns:ProductCategoryAttributeValue"/>
+        </xs:sequence>
+    </xs:complexType>   
+     
+       <xs:complexType name="ProductCategoryAttributeSet">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="data" type="tns:ProductCategoryAttribute"/>
+        </xs:sequence>
+    </xs:complexType>   
+     -->
+ 
+    <xs:complexType name="MaintenanceItem">
+        <xs:sequence>
+            <xs:element name="activationID" nillable="true" type="xs:string"/>
+            <xs:element name="orderID" nillable="true" type="xs:string"/>
+            <xs:element name="orderLineNumber" nillable="true" type="xs:string"/>
+            <xs:element name="expirationDate" nillable="true" type="xs:dateTime"/>
+            <xs:element name="partNumber" nillable="true" type="tns:PartNumber"/>
+            <xs:element name="maintenanceProduct" nillable="true" type="tns:Product"/>
+            <xs:element name="parentEntitlement" nillable="true" type="tns:Entitlement"/>
+        </xs:sequence>
+   </xs:complexType>
+   
+   <xs:element name="MaintenanceItem" type="tns:MaintenanceItem" />
+   <!--
+    <xs:complexType name="MaintenanceItems">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="attributes" type="tns:MaintenanceItem"/>
+        </xs:sequence>
+    </xs:complexType>   
+    -->
+  
+       <xs:complexType name="PartNumber">
+        <xs:sequence>
+            <xs:element name="partNumberName" nillable="true" type="xs:string"/>
+            <xs:element name="licenseModel" nillable="true" type="tns:LicenseModel"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!--
+    <xs:complexType name="PartNumberSet">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="data" type="tns:PartNumber"/>
+        </xs:sequence>
+    </xs:complexType>   
+    
+       
+    <xs:complexType name="EntitledProductSet">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="data" type="tns:Product"/>
+        </xs:sequence>
+    </xs:complexType>  
+    -->
+    <!--========== End Prodcut types to all requests ===============  -->
+    
+    <!--========== Begin License model types to all requests ===============  --> 
+
+   
+   
+    <xs:complexType name="LicenseModel">
+        <xs:sequence>
+            <xs:element name="allowPartialFulfillments" nillable="true" type="xs:boolean"/>
+            <xs:element name="modelType" nillable="true" type="xs:string"/>
+            <xs:element name="name" nillable="true" type="xs:string"/>
+            <xs:element name="modelTimeAttributes" nillable="true" type="tns:AttributeSet"/>
+            <xs:element name="entitlementTimeAttributes" nillable="true" type="tns:AttributeSet"/>
+            <xs:element name="fulfillmentTimeAttributes" nillable="true" type="tns:AttributeSet"/>            
+            <xs:element name="duration" nillable="true" type="tns:Duration" />
+            <xs:element name="rehostsLifeCyclePolicy" nillable="true" type="tns:LicenseLifecyclePolicy"/>
+            <xs:element name="returnsLifeCyclePolicy" nillable="true" type="tns:LicenseLifecyclePolicy"/>
+            <xs:element name="repairsLifeCyclePolicy" nillable="true" type="tns:LicenseLifecyclePolicy"/>
+            <xs:element name="activationsLifecyclePolicy" nillable="true" type="tns:LicenseLifecyclePolicy"/>    
+            <xs:element name="attributeWhen" nillable="true" type="tns:AttributeWhenENC"/>
+            <xs:element name="timeZoneWhen" nillable="true" type="tns:AttributeWhenENC"/>
+            <xs:element name="cancelLicensePolicy" nillable="true" type="tns:LicenseCancelPolicy"/>
+            
+            <xs:element name="serverHostIdPolicy" nillable="true" type="tns:LicenseHostIdPolicy"/>
+            <xs:element name="nodeLockedHostIdPolicy" nillable="true" type="tns:LicenseHostIdPolicy"/>
+            <xs:element name="portalServerHostIdPolicy" nillable="true" type="tns:LicenseHostIdPolicy"/>
+            <xs:element name="portalNodeLockedHostIdPolicy" nillable="true" type="tns:LicenseHostIdPolicy"/>    
+        </xs:sequence>    
+    </xs:complexType>
+
+    <xs:element name="LicenseModelRequest">
+        <xs:complexType >
+            <xs:complexContent>
+                <xs:extension base="tns:LicenseModel">
+                    <xs:sequence>
+                        <!-- This is not needed  as its custome technology  -->
+                        <xs:element name="deployed" nillable="true" type="xs:boolean"/>
+                        <xs:element name="LicenseTechnology" nillable="true" type="tns:LicenseTechnology"/>    
+                        <xs:element name="licenseGeneratorConfiguration" nillable="true" type="tns:LicenseGeneratorConfig"/>
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <!--========== End License model types to all requests ===============  -->    
+    
+    <!--========== Begin Generate License types to all requests ===============  -->
+    
+    <xs:complexType name = "GeneratorRequest">
+        <xs:sequence>
+            <!--========== Fulfillment details ===============  -->
+            <xs:element name="fulfilementID" nillable="false" type="xs:string"/>    
+            <xs:element name="fulfillCount" type="xs:int"/>
+            <xs:element name="startDate" nillable="true" type="xs:dateTime"/>    
+            <xs:element name="shipToEmail" nillable="true" type="xs:string"/>
+            <xs:element name="customHost" nillable="true" type="tns:CustomHostId"/>
+            <xs:element name="overdraftCount" type="xs:int"/>
+            <xs:element maxOccurs="unbounded" nillable="true"  minOccurs="0" name="parentFulfillments" type="tns:FulfillmentRecord"/>
+            <xs:element name="requestType" nillable="true" type="tns:FulfillmentRequestTypeENC"/>
+            <xs:element name="verifyRequest" type="xs:boolean"/>
+            
+            <!--========== Line item details ===============  -->
+            <xs:element name="activationID" nillable="false" type="xs:string"/>
+            <xs:element name="versionDate" nillable="true" type="xs:dateTime"/>
+            <xs:element name="expirationDate" nillable="true" type="xs:dateTime"/>
+            <xs:element name="EntitlementLineItemCustomAttributes" nillable="true" type="tns:CustomAttribute" maxOccurs="unbounded" minOccurs="0" />
+            
+            <!--========== Entitlement details ===============  -->
+            <xs:element name="entitlementID" nillable="false" type="xs:string"/>
+            <xs:element name="orderId" nillable="true" type="xs:string"/>
+            <xs:element name="orderLineNumber" nillable="true" type="xs:string"/>
+            <xs:element name="soldTo" nillable="true" type="tns:OrganizationUnit"/>
+            <xs:element name="soldToUsers" nillable="true" type="tns:OrgUnitUser" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="EntitlementCustomAttributes" nillable="true" type="tns:CustomAttribute" maxOccurs="unbounded" minOccurs="0" />
+            
+            <!--========== Prodcut details ===============  -->
+            <xs:element  name="entitledProducts" nillable="true" maxOccurs="unbounded" minOccurs="0" type="tns:Product"/>
+            <xs:element name="partNumber" nillable="true" type="tns:PartNumber"/>                    
+        
+            <!--========== License Model details ===============  -->        
+            <xs:element name="licenseModel" nillable="true" type="tns:LicenseModel"/>
+            
+            <!--========== License Generator Config details ===============  -->    
+            <xs:element name="licenseGeneratorConfiguration" nillable="true" type="tns:LicenseGeneratorConfig"/>            
+            
+            <!--========== License Technology details ===============  -->    
+            <xs:element name="licenseTechnology" nillable="true" type="tns:LicenseTechnology"/>            
+            <xs:element name="licenseFileDefinitions" nillable="true" maxOccurs="unbounded" minOccurs="0" type="tns:LicenseFileDefinition"/>
+            
+            <xs:element name="licenseFileType" nillable="true" type="tns:LicenseFileTypeENC"/>
+            
+            <!--========== Misc. details ===============  -->        
+            <xs:element name="currentLicenseOnHost" nillable="true" type="xs:string"/>            
+            <xs:element name="loggedInUser" nillable="true" type="tns:OrgUnitUser"/>
+            
+        </xs:sequence>
+    </xs:complexType>
+    
+    
+    <xs:element name="GeneratorRequest" type="tns:GeneratorRequest" />
+    <xs:element name="FileNamesRequest" type="tns:GeneratorRequest" />
+    
+    
+    <xs:element name="GeneratorResponse">
+        <xs:complexType >
+            <xs:sequence>
+                <xs:element name="binaryLicense" nillable="true" type="xs:base64Binary"/>
+                <xs:element name="complete" type="xs:boolean"/>
+                <xs:element name="licenseFileName" nillable="true" type="xs:string"/>
+                <xs:element name="licenseFiles" nillable="true" maxOccurs="unbounded" minOccurs="0" type="tns:LicenseFileMapItem"/>
+                <xs:element name="licenseText" nillable="true" type="xs:string"/>
+                <xs:element name="message" nillable="true" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <!--========== End Generate License types to all requests ===============  -->    
+    
+    <!--========== Begin OrganizationUnit types to all requests ===============  -->
+        <xs:complexType name="OrgUnitContact">
+        <xs:sequence>
+            <xs:element name="id" nillable="false" type="xs:long"/>
+            <xs:element name="firstName" nillable="true" type="xs:string"/>
+            <xs:element name="lastName" nillable="true" type="xs:string"/>
+            <xs:element name="displayName" nillable="true" type="xs:string"/>
+            <xs:element name="emailAddress" nillable="true" type="xs:string"/>
+            <xs:element name="phoneNumber" nillable="true" type="xs:string"/>
+            <xs:element name="faxNumber" nillable="true" type="xs:string"/>
+            <xs:element name="streetAddress" nillable="true" type="xs:string"/>
+            <xs:element name="city" nillable="true" type="xs:string"/>
+            <xs:element name="state" nillable="true" type="xs:string"/>
+            <xs:element name="postalCode" nillable="true" type="xs:string"/>
+            <xs:element name="country" nillable="true" type="xs:string"/>
+            <xs:element name="timezone" nillable="true" type="xs:string"/>        
+            <xs:element name="optIn" nillable="false" type="xs:boolean"/>
+            <xs:element name="organizationUnitName" nillable="true" type="xs:string"/>
+            <xs:element name="locale" nillable="true" type="xs:string"/>
+        </xs:sequence>
+   </xs:complexType>
+   <!--
+    <xs:complexType name="OrganizationUnitSet">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="data" type="tns:OrganizationUnit"/>
+        </xs:sequence>
+    </xs:complexType>   
+    
+    
+  
+    <xs:complexType name="OrgUnitContactSet">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="data" type="tns:OrgUnitContact"/>
+        </xs:sequence>
+    </xs:complexType>   
+    -->
+    
+
+   <xs:complexType name="OrganizationUnit">
+    <xs:sequence>
+        <xs:element name="id" nillable="false" type="xs:long"/>
+        <xs:element name="name" nillable="true" type="xs:string"/>
+        <xs:element name="tenantId" nillable="true" type="xs:string"/>
+        <xs:element name="displayName" nillable="true" type="xs:string"/>
+        <xs:element name="address1" nillable="true" type="xs:string"/>
+        <xs:element name="address2" nillable="true" type="xs:string"/>
+        <xs:element name="city" nillable="true" type="xs:string"/>
+        <xs:element name="state" nillable="true" type="xs:string"/>
+        <xs:element name="zipCode" nillable="true" type="xs:string"/>
+        <xs:element name="country" nillable="true" type="xs:string"/>
+        <xs:element name="region" nillable="true" type="xs:string"/>
+        <xs:element name="contacts" nillable="true" maxOccurs="unbounded" minOccurs="0" type="tns:OrgUnitContact"/>
+        <xs:element name="customAttributes" nillable="true" type="tns:CustomAttribute" maxOccurs="unbounded" minOccurs="0" />
+    </xs:sequence>
+   </xs:complexType>
+   
+  <xs:complexType name="Role">
+    <xs:sequence>
+        <xs:element name="id" nillable="true" type="xs:long"/>
+        <xs:element name="name" nillable="true" type="xs:string"/>
+        <xs:element name="active" nillable="true" type="xs:boolean"/>
+    </xs:sequence>
+   </xs:complexType>
+     
+   <xs:complexType name="ChannelPartner">
+    <xs:sequence>
+        <xs:element name="orgUnit" nillable="true" type="tns:OrganizationUnit"/>
+        <xs:element name="contact" nillable="true" type="tns:OrgUnitContact"/>
+        <xs:element name="partnerTierName" nillable="true" type="xs:string"/>
+    </xs:sequence>    
+   </xs:complexType>
+       
+<!--
+    <xs:complexType name="ChannelPartnerSet">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="data" type="tns:ChannelPartner"/>
+        </xs:sequence>
+    </xs:complexType>   
+    
+    <xs:complexType name="RoleSet">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="data" type="tns:Role"/>
+        </xs:sequence>
+    </xs:complexType>   
+    -->
+    
+   <xs:complexType name="OrgUnitUser">
+     <xs:complexContent>
+      <xs:extension base="tns:OrgUnitContact">
+        <xs:sequence>
+            <xs:element name="userId" nillable="true" type="xs:string"/>
+            <xs:element name="roles" nillable="true" maxOccurs="unbounded" minOccurs="0" type="tns:Role"/>
+            <xs:element name="customAttributes" nillable="true" type="tns:CustomAttribute" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+     </xs:complexContent>
+   </xs:complexType>
+
+     <!--
+    <xs:complexType name="OrgUnitUserSet">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="data" type="tns:OrgUnitUser"/>
+        </xs:sequence>
+    </xs:complexType>  
+    -->
+    
+    <!--========== End OrganizationUnit types to all requests ===============  -->
+    
+    <!--========== Begin License Generator types to all requests ===============  -->
+    <xs:complexType name="LicenseGeneratorConfig">
+        <xs:sequence>
+            <xs:element name="name" nillable="true" type="xs:string"/>
+            <xs:element name="attributes" nillable="true" type="tns:AttributeSet"/>
+            <xs:element name="licenseTechnology" nillable="true" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>    
+    <!--========== End License Generator  types to all requests ===============  -->
+    
+    <!--========== Begin License Technology to all requests ===============  -->
+    
+    <!--========== End License Technology  types to all requests ===============  -->
+    <xs:complexType name="LicenseTechnology">
+        <xs:sequence>
+            <xs:element name="name" nillable="true" type="xs:string"/>
+            <xs:element name="emergencyAllowed" nillable="true" type="xs:boolean"/>
+            <xs:element name="publisherErrorCorrectionAllowed" nillable="true" type="xs:boolean"/>
+            <xs:element name="rehostAllowed" nillable="true" type="xs:boolean"/>
+            <xs:element name="repairAllowed" nillable="true" type="xs:boolean"/>
+            <xs:element name="returnAllowed" nillable="true" type="xs:boolean"/>
+            <xs:element name="stopGapAllowed" nillable="true" type="xs:boolean"/>    
+            <xs:element name="customFilenameGenerator" nillable="true" type="xs:string"/>
+            <xs:element name="licenseAttributes" nillable="true" type="tns:AttributeSet"/>
+            <xs:element name="generatorAttributes" nillable="true" type="tns:AttributeSet"/>
+            <xs:element name="licenseGeneratorConfigurationName" nillable="true" type="xs:string"/>
+            <xs:element name="state" nillable="true" type="tns:EntityStateENC"/>    
+            <xs:element name="licenseFileType" nillable="true" type="tns:LicenseFileTypeENC"/>
+            <xs:element name="licenseFileDefinitions" nillable="true" maxOccurs="unbounded" minOccurs="0" type="tns:LicenseFileDefinition"/>
+            <xs:element name="hostTypes" nillable="true" maxOccurs="unbounded" minOccurs="0" type="tns:HostType"/>                        
+        </xs:sequence>
+   </xs:complexType>
+   
+   <xs:complexType name="LicenseFileDefinition">
+     <xs:sequence>
+        <xs:element name="id" nillable="true" type="xs:long"/>
+        <xs:element name="name" nillable="true" type="xs:string"/>
+        <xs:element name="licenseStorageType" nillable="true" type="tns:LicenseFileTypeENC"/>
+     </xs:sequence>
+   </xs:complexType>
+    <!--
+    <xs:complexType name="LicenseFileDefinitionSet">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="data" type="tns:LicenseFileDefinition"/>
+        </xs:sequence>
+    </xs:complexType>   
+    -->
+   
+    <xs:complexType name="LicenseFileMapItem">
+        <xs:sequence>
+            <xs:element name="name" nillable="true" type="xs:string"/>
+            <xs:element name="value" nillable="true" type="xs:anyType"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!--
+    <xs:complexType name="LicenseFileMap">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="item" type="tns:LicenseFileMapItem"/>
+        </xs:sequence>
+    </xs:complexType>
+    -->
+    <xs:complexType name="LicenseFileDefinitionMapItem">
+        <xs:sequence>
+            <xs:element name="name" nillable="true" type="xs:string"/>
+            <xs:element name="value" nillable="true" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="LicenseFileDefinitionMap">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="item" type="tns:LicenseFileDefinitionMapItem"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:element name="LicenseFileDefinitionMap" type="tns:LicenseFileDefinitionMap" />
+    
+    <!--========== End license Technologytypes to all requests ===============  -->
+    
+    <!--========== Begin Fulfillment  types to all requests ===============  -->
+    <xs:complexType name="FulfillmentRecord">
+        <xs:sequence>
+            <xs:element name="binaryLicense" nillable="true" type="xs:base64Binary"/>
+            <xs:element name="lineItem" nillable="true" type="tns:EntitlementLineItem"/>
+            <xs:element name="licenseModelAttributes" nillable="true" type="tns:AttributeSet"/>
+            <xs:element name="lifeCycleStatus" nillable="true" type="tns:FulfillmentLifeCycleStatusENC"/>
+            <xs:element name="source" nillable="true" type="tns:FulfillmentSourceENC"/>
+            <xs:element name="state" nillable="true" type="tns:EntityStateENC"/>
+            
+            <xs:element name="fulfilledRepairCount" nillable="true" type="xs:int"/>
+            <xs:element name="overdraftCount" nillable="true" type="xs:int"/>
+            <xs:element name="fulfillmentCount" nillable="true" type="xs:int"/>
+            <xs:element name="fulfillDate" nillable="true" type="xs:dateTime"/>
+            <xs:element name="expirationDate" nillable="true" type="xs:dateTime"/>
+            <xs:element name="startDate" nillable="true" type="xs:dateTime"/>
+            <xs:element name="returnedCount" nillable="true" type="xs:int"/>
+            
+            <xs:element name="fulfillmentId" nillable="true" type="xs:string"/>    
+            <xs:element name="migrationID" nillable="true" type="xs:string"/>
+            <xs:element name="shipToAddress" nillable="true" type="xs:string"/>    
+            <xs:element name="shipToEmail" nillable="true" type="xs:string"/>    
+            
+            <xs:element name="licenseTechnology" nillable="true" type="tns:LicenseTechnology"/>    
+            <xs:element name="activationTypeENC" nillable="true" type="tns:ActivationTypeENC"/>    
+            <xs:element name="licenseHostId" nillable="true" type="tns:LicenseHostId"/>
+            
+            <xs:element name="licenseFileType" nillable="true" type="tns:LicenseFileTypeENC" />    
+            <xs:element name="reatedBy" nillable="true" type="xs:string"/>            
+            <xs:element name="licenseFilename" nillable="true" type="xs:string"/>
+            <xs:element name="licenseFiles" nillable="true" maxOccurs="unbounded" minOccurs="0" type="tns:LicenseFileMapItem"/>
+            <xs:element name="licenseFileNames" maxOccurs="unbounded" minOccurs="0" type="tns:LicenseFileDefinitionMapItem"/>            
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="FulfillmentRecordSet">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" nillable="true"  minOccurs="0" name="fulfillments" type="tns:FulfillmentRecord"/>
+        </xs:sequence>
+    </xs:complexType> 
+
+    <xs:element name="FulfillmentRecordSet" type="tns:FulfillmentRecordSet" />
+    
+    <xs:element name="FulfillmentRecord" type="tns:FulfillmentRecord" />
+    
+    <!--========== End fulfilment types to all requests ===============  -->
+    
+    <!--========== Begin entitilement  types to all requests ===============  -->
+     <xs:complexType name="EntitlementLineItem">
+        <xs:sequence>
+            <xs:element name="licenseTerm" nillable="true" type="tns:LicenseTerm"/>
+            <xs:element name="activationID" nillable="true" type="xs:string"/>
+            <xs:element name="orderId" nillable="true" type="xs:string"/>
+            <xs:element name="orderLineNumber" nillable="true" type="xs:string" />
+            <xs:element name="entitledProducts" nillable="true" maxOccurs="unbounded" minOccurs="0" type="tns:Product"/>
+            <xs:element name="PartNumber" nillable="true" type="tns:PartNumber"/>
+            <xs:element name="licenseModel" nillable="true" type="tns:LicenseModel"/>
+            <xs:element name="licenseModelAttributes" nillable="true" type="tns:AttributeSet"/>
+            <xs:element name="parentEntitlement" nillable="true" type="tns:SimpleEntitlement"/>
+            <xs:element name="lineItemState" nillable="true" type="tns:EntityStateENC"/>            
+            <xs:element name="parentLineItem" nillable="true" type="tns:EntitlementLineItem"/>
+            <xs:element name="inactive" nillable="true" type="xs:boolean"/>
+            <xs:element name="test" nillable="true" type="xs:boolean"/>
+            <xs:element name="numberOfCopies" nillable="true" type="xs:int"/>
+            <xs:element name="numberOfRemainingCopies" nillable="true" type="xs:int"/>
+            <xs:element name="exactAvailableCount" nillable="true" type="xs:int"/>
+            <xs:element name="fulfilledAmount" nillable="true" type="xs:int"/>
+            <xs:element name="overdraftMax" nillable="true" type="xs:int"/>
+            <xs:element name="overdraftFulfilled" nillable="true" type="xs:int"/>
+            <xs:element name="availableOverdraftCount" nillable="true" type="xs:int"/>
+            <xs:element name="overdraftFloor" nillable="true" type="xs:int"/>
+            <xs:element name="overdraftFloorPercent" nillable="true" type="xs:boolean"/>
+            <xs:element name="overdraftCeiling" nillable="true" type="xs:int"/>
+            <xs:element name="overdraftCeilingPercent" nillable="true" type="xs:boolean"/>
+            <xs:element name="extraActivationsMax" nillable="true" type="xs:int"/>            
+            <xs:element name="extraActivationsPolicy" nillable="true" type="tns:LicenseLifecyclePolicy"/>
+            <xs:element name="numberOfReturnsPolicy" nillable="true" type="tns:LicenseLifecyclePolicy"/>
+            <xs:element name="numberOfRehostsPolicy" nillable="true" type="tns:LicenseLifecyclePolicy"/>
+            <xs:element name="numberOfRepairsPolicy" nillable="true" type="tns:LicenseLifecyclePolicy"/>
+            <xs:element name="entitlementSupportAction" nillable="true" type="tns:EntitlementSupportActionENC"/>
+            <xs:element name="VersionDateOption" nillable="true" type="tns:VersionDateOptionsENC"/>
+            <xs:element name="versionDateDuration" nillable="true" type="tns:Duration"/>
+            <xs:element name="redundantServerPolicy" nillable="true" type="tns:LicenseRedundantServerPolicy"/>
+            <xs:element name="reinstallPolicy" nillable="true" type="tns:ReinstallPolicy"/>
+            <xs:element name="CancelLicensePolicy" nillable="true" type="tns:LicenseCancelPolicy"/>
+
+            <xs:element name="upgrade" nillable="true" type="xs:boolean"/>
+            <xs:element name="upsell" nillable="true" type="xs:boolean"/>            
+            <xs:element name="renew" nillable="true" type="xs:boolean"/>
+            <xs:element name="startDateOption" nillable="true" type="tns:StartDateOptionsENC"/>    
+            <xs:element name="licenseTechnology" nillable="true" type="tns:LicenseTechnology"/>  
+            <xs:element name="maintenanceItems" nillable="true" maxOccurs="unbounded" minOccurs="0" type="tns:MaintenanceItem"/>
+            <xs:element name="versionDate" nillable="true" type="xs:dateTime"/>      
+            <xs:element name="customAttributes" nillable="true" type="tns:CustomAttribute" maxOccurs="unbounded" minOccurs="0"/>            
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="EntitlementLineItem" type="tns:EntitlementLineItem" />
+        
+    <!--
+    <xs:complexType name="EntitlementLineItemSet">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="data" type="tns:EntitlementLineItem"/>
+        </xs:sequence>
+    </xs:complexType>  
+    -->
+
+    <xs:complexType name="SimpleEntitlement">
+        <xs:complexContent>
+            <xs:extension base="tns:Entitlement">
+                <xs:sequence>
+                    <xs:element name="comments" nillable="true" type="xs:string"/>
+                    <xs:element name="allLineItems" nillable="true" maxOccurs="unbounded" minOccurs="0" type="tns:EntitlementLineItem"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <!--========== End entitlement types to all requests ===============  -->
+    
+    <!--========== Begin Consolidate License types to all requests ===============  -->
+    <xs:element name="ConsolidatedLicense">
+        <xs:complexType>
+            <xs:sequence>
+               <xs:element name="licenseText" nillable="true" type="xs:string"/>
+               <xs:element name="criteria" nillable="true" type="xs:string"/>
+               <xs:element maxOccurs="unbounded" nillable="true"  minOccurs="0" name="fulfillments" type="tns:FulfillmentRecord"/>
+               <xs:element name="licenseFileName" nillable="true" type="xs:string"/>
+               <xs:element name="binaryLicense" nillable="true" type="xs:base64Binary"/>
+               <xs:element name="licenseFileNames" nillable="true" maxOccurs="unbounded" minOccurs="0" type="tns:LicenseFileDefinitionMapItem"/>            
+               <xs:element name="licFiles" nillable="true" maxOccurs="unbounded" minOccurs="0" type="tns:LicenseFileMapItem"/>
+               
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="ConsolidatedLicenseResquest">
+        <xs:complexType >
+            <xs:sequence>
+               <xs:element name="licenseText" nillable="true" type="xs:string"/>
+               <xs:element name="criteria" nillable="true" type="xs:string"/>
+               <xs:element maxOccurs="unbounded" nillable="true"  minOccurs="0" name="fulfillments" type="tns:FulfillmentRecord"/>
+               <xs:element name="licenseFileName" nillable="true" type="xs:string"/>
+               <xs:element name="binaryLicense" nillable="true" type="xs:base64Binary"/>
+               <xs:element name="licenseFileNames" nillable="true" maxOccurs="unbounded" minOccurs="0" type="tns:LicenseFileDefinitionMapItem"/>
+               <xs:element name="licFiles" nillable="true" maxOccurs="unbounded" minOccurs="0" type="tns:LicenseFileMapItem"/>
+            </xs:sequence>
+        </xs:complexType>  
+    </xs:element>
+
+    <!--========== End Consolidate License types to all requests ===============  -->
+    
+    <!--========== Begin BulkEntitlement types to all requests ===============  -->
+    <xs:complexType name="BulkEntitlement">
+        <xs:complexContent>
+            <xs:extension base="tns:Entitlement">
+                <xs:sequence>
+                    <xs:element name="permanent" nillable="true" type="xs:boolean"/>
+                    <xs:element name="expirationDate" nillable="true" type="xs:dateTime"/>
+                    <xs:element name="duration" nillable="true" type="tns:Duration"/>
+                    <xs:element name="licenseTerm" nillable="true" type="tns:LicenseTerm"/>
+                    <xs:element name="versionDate" nillable="true" type="xs:dateTime"/>
+                    <xs:element name="totalNumberOfWebRegkeys" nillable="true" type="xs:int"/>
+                    <xs:element name="entitledProducts" nillable="true" maxOccurs="unbounded" minOccurs="0" type="tns:Product"/>
+                    <xs:element name="partNumber" nillable="true" type="tns:PartNumber"/>
+                    <xs:element name="licenseModel" nillable="true" type="tns:LicenseModel"/>
+                    <xs:element name="orderId" nillable="true" type="xs:string"/>
+                    <xs:element name="licenseModelAttributes" nillable="true" type="tns:AttributeSet"/>
+                    <xs:element name="extraActivationsMax" nillable="true" type="xs:int"/>
+                    <xs:element name="availableExtraActivations" nillable="true" type="xs:int"/>
+                    <xs:element name="overdraftMax" nillable="true" type="xs:int"/>
+                    <xs:element name="overdraftFloor" nillable="true" type="xs:int"/>
+                    <xs:element name="overdraftFloorPercent" nillable="true" type="xs:boolean"/>
+                    <xs:element name="overdraftCeiling" nillable="true" type="xs:int"/>
+                    <xs:element name="overdraftCeilingPercent" nillable="true" type="xs:boolean"/>
+                    <xs:element name="orderLineNumber" nillable="true" type="xs:string"/>
+                    <xs:element name="VersionDateOption" nillable="true" type="tns:VersionDateOptionsENC"/>
+                    <xs:element name="versionDateDuration" nillable="true" type="tns:Duration"/>
+                    <xs:element name="numberOfCopies" nillable="true" type="xs:int"/>
+                    <xs:element name="upgrade" nillable="true" type="xs:boolean"/>
+                    <xs:element name="upsell" nillable="true" type="xs:boolean"/>            
+                    <xs:element name="renew" nillable="true" type="xs:boolean"/>
+                    <xs:element name="startDateOption" nillable="true" type="tns:StartDateOptionsENC"/>                    
+                    <xs:element name="numberOfRedeemedWebRegKeys" nillable="true" type="xs:int"/>     
+                    <xs:element name="timezone" nillable="true" type="xs:string"/> 
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:element name="BulkEntitlement" type="tns:BulkEntitlement" />
+    <!--========== End BulkEntitlement types to all requests ===============  -->
+    
+    <!--========== Begin ConsolidatedLicenseRecord types to all requests ===============  -->
+    <xs:complexType name="ConsolidatedLicenseRecord">       
+        <xs:sequence>
+            <xs:element name="licenseTechnology" nillable="true" type="tns:LicenseTechnology"/>
+            <xs:element name="consolidatedLicenseId" nillable="true" type="xs:string"/>            
+            <xs:element name="criteria" nillable="true" type="xs:string"/>            
+            <xs:element name="status" nillable="true" type="xs:string"/>
+            <xs:element name="fulfillments" maxOccurs="unbounded" nillable="true"  minOccurs="0" type="tns:FulfillmentRecord"/>
+            <xs:element name="soldTo" nillable="true" type="tns:OrganizationUnit"/>
+            <xs:element name="licenseFileNames" nillable="true" maxOccurs="unbounded" minOccurs="0" type="tns:LicenseFileDefinitionMapItem"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:element name="ConsolidatedLicenseRecord" type="tns:ConsolidatedLicenseRecord" />
+    <!--========== End ConsolidatedLicenseRecord types to all requests ===============  -->
+    
+	 
+    <!--========== Begin Renewal Line Item types to all requests ===============  -->
+    <xs:complexType name="RenewableEntitlementLineItem">
+        <xs:complexContent>
+            <xs:extension base="tns:EntitlementLineItem">
+                <xs:sequence>
+                    <xs:element name="remainingDays" nillable="false" type="xs:long"/>
+                    <xs:element name="type" nillable="false" type="xs:string"/>
+                    <xs:element name="orgName" nillable="true" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:element name="renewableEntitlementLineItems">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="renewableEntitlementLineItems" nillable="true" maxOccurs="unbounded" minOccurs="0" type="tns:RenewableEntitlementLineItem"/>
+			</xs:sequence>
+		</xs:complexType>
+    </xs:element>
+	
+    <xs:simpleType name="RenewalStatus">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="SUCCESS"/>
+            <xs:enumeration value="FAILURE"/>
+            <xs:enumeration value="REDIRECT"/>
+        </xs:restriction>
+    </xs:simpleType>
+	
+	<xs:complexType name="RenewalResponse">       
+        <xs:sequence>        
+            <xs:element name="status" type="tns:RenewalStatus"/>
+			 <xs:element name="redirectUrl" nillable="true" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+	<xs:element name="renewalResponse" type="tns:RenewalResponse" />
+	
+	<!-- <xs:element name="RenewableEntitlementLineItem" type="tns:RenewableLineItem" / > -->
+	
+    <!--========== End BulkEntitlement types to all requests ===============  -->
+	
+	
+     <xs:complexType name="VersionInfo">       
+        <xs:sequence>        
+            <xs:element name="version" nillable="true" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+        
+    <xs:complexType name="Id">       
+        <xs:sequence>        
+            <xs:element name="id" nillable="true" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="Status">       
+        <xs:sequence>        
+            <xs:element name="message" nillable="true" type="xs:string"/>
+            <xs:element name="code" nillable="true" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:element name="VersionInfo" type="tns:VersionInfo" />
+    <xs:element name="Id" type="tns:Id" />
+    <xs:element name="Status" type="tns:Status" />
+
+</xs:schema>
