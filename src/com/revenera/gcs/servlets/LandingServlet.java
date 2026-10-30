@@ -159,30 +159,30 @@ public class LandingServlet extends HttpServlet {
 
       final String html = MessageFormat.format(page,
           css,
-          //Version 1 2
+          ///Version 1 2
           props.getVersionMajor(), props.getVersionMinor(),
-          //Release Date 3 4
+          ///Release Date 3 4
           props.getReleaseDate(), props.getReleaseTime(),
-          //Build Number 5
+          ///Build Number 5
           props.getBuildNumber(),
-          //Environment 6 7 8
+          ///Environment 6 7 8
           SystemUtils.OS_NAME, SystemUtils.OS_VERSION, SystemUtils.OS_ARCH,
-          //Status 9, 10
+          ///Status 9, 10
           SystemUtils.getHostName(), Utils.prettyPrintDuration(ExecutionContext.getApplicationDuration()),
-          //Java Runtime 11, 12, 13
+          ///Java Runtime 11, 12, 13
           SystemUtils.JAVA_VM_NAME, SystemUtils.JAVA_VERSION, SystemUtils.JAVA_CLASS_VERSION,
-          //Technologies 14
+          ///Technologies 14
           "== NA ==",
-          //Product Lines 15
+          ///Product Lines 15
           String.join("; ", ExecutionContext
               .getApplicationProperties()
               .getProficyConfiguration()
               .getProductLines()),
-          //Diagnostics 16
+          ///Diagnostics 16
           diag,
-          // Title 17
+          /// Header 17
           ExecutionContext.getApplicationProperties().getItem(ApplicationProperties.Items.LANDING_HEADER),
-          // 18
+          /// Title 18
           ExecutionContext.getApplicationProperties().getItem(ApplicationProperties.Items.LANDING_TITLE)
       );
 

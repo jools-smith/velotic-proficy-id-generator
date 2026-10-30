@@ -143,7 +143,7 @@ public final class ApplicationProperties extends Loggable {
     return new ProficyConfiguration() {
       {
         this.charset = getItem(Items.PROFICY_CHARSET);
-        this.charset = getItem(Items.PROFICY_SEPARATOR);
+        this.separator = getItem(Items.PROFICY_SEPARATOR);
         this.groupCount = Integer.parseInt(getItem(Items.PROFICY_GROUP_COUNT));
         this.groupLength = Integer.parseInt(getItem(Items.PROFICY_GROUP_LENGTH));
         this.productLines = Arrays.asList(

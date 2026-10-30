@@ -43,14 +43,14 @@ class Transaction {
 
   DataObject request;
   DataObject response;
-  List<DataObject> payload;
+  final List<DataObject> payload = new LinkedList<>();
 
   Transaction(final Frame frame) {
     this.frame = frame;
   }
 
   boolean hasData() {
-    return this.request != null || this.response != null || this.payload != null;
+    return this.request != null || this.response != null || !this.payload.isEmpty();
   }
 }
 
@@ -112,11 +112,11 @@ public class ExecutionContext implements AutoCloseable {
   public static <T> T injectPayload(final T data) {
     final Transaction ctx = context.get().getLast();
 
-    if (ctx.payload == null) {
-      ctx.payload = new LinkedList<>();
-    }
-
-    ctx.payload.add(new DataObject(new Frame(Frame.Depth.ONE), data));
+    context.get().getLast().payload.add(
+        new DataObject(
+            new Frame(Frame.Depth.ONE),
+            data)
+    );
 
     return data;
   }

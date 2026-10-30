@@ -4,23 +4,26 @@ package com.revenera.gcs;
 import com.revenera.gcs.logging.Level;
 import com.revenera.gcs.logging.Loggable;
 import com.revenera.gcs.utils.Serializer;
-import com.revenera.gcs.webservices.ServiceProperties;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jws.WebService;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * The root of the service, registered as a listener will set stuff up when the context is initialized
@@ -67,6 +70,20 @@ public class Application extends Loggable implements ServletContextListener {
     }
   }
 
+  public void archiveLogFile(final Path source) throws IOException {
+    final Path zip = source.resolveSibling(source.getFileName() + ".zip");
+
+    try (final ZipOutputStream out = new ZipOutputStream(Files.newOutputStream(zip))) {
+      out.putNextEntry(new ZipEntry(source.getFileName().toString()));
+
+      Files.copy(source, out);
+
+      logger.get().info("archived {0} to {1}", source.getFileName(), zip.getFileName());
+    }
+
+    Files.delete(source);
+  }
+
   private void serializeToLogPath(final String filename, final List<String> content) throws IOException {
     //noinspection unused
 
@@ -80,7 +97,6 @@ public class Application extends Loggable implements ServletContextListener {
             true);
       }
     }
-
   }
 
   private void polling() {
@@ -104,6 +120,10 @@ public class Application extends Loggable implements ServletContextListener {
     }
   }
 
+  private static String getCurrentLogFileName() {
+    return LocalDate.now() + ".revenera.log";
+  }
+
   private void logging() {
     //noinspection unused
     try (final ExecutionContext ctx = new ExecutionContext()) {
@@ -115,7 +135,7 @@ public class Application extends Loggable implements ServletContextListener {
         }
 
         if (!messages.isEmpty()) {
-          serializeToLogPath(LocalDate.now() + ".revenera.log", messages);
+          serializeToLogPath(getCurrentLogFileName(), messages);
         }
       }
       catch (final Throwable t) {
@@ -128,12 +148,61 @@ public class Application extends Loggable implements ServletContextListener {
   private void housekeeping() {
     //noinspection unused
     try (final ExecutionContext ctx = new ExecutionContext()) {
-      try {
-        logger.yaml(Level.DEBUG, ExecutionContext.getRecordsBag());
+
+      final Path loggingRoot = ExecutionContext.getLogPath().toRealPath();
+
+      final String currentLogFileName = getCurrentLogFileName().toLowerCase();
+
+      final List<Path> files;
+
+      /// try resources
+      try (final Stream<Path> stream = Files.list(loggingRoot)) {
+        files = stream
+            .filter(Files::isRegularFile)
+            .filter(path -> !path
+                .getFileName()
+                .toString()
+                .toLowerCase()
+                .equals(currentLogFileName))
+            .filter(path -> !path
+                .getFileName()
+                .toString()
+                .toLowerCase()
+                .matches(".*\\.(zip)$"))
+            .map(Path::toAbsolutePath)
+            .collect(Collectors.toList());
       }
-      catch (final Throwable t) {
-        logger.exception(t);
+
+      logger.get().debug("files located {0} {1}",
+          files.size(),
+          files.stream()
+              .map(Path::toString)
+              .collect(Collectors.joining("\n")));
+
+      if (!files.isEmpty()) {
+        final Instant age = Instant.now().minus(Duration.ofDays(31));
+
+        for (final Path file : files) {
+
+          /// delete anything older than a month(ish)
+          if (Files.getLastModifiedTime(file).toInstant().isBefore(age)) {
+            Files.delete(file);
+            logger.get().info("deleted {0}", file.getFileName());
+
+            continue;
+          }
+
+          /// if it's an old non-zip-file then archive it
+          if (file.getFileName().toString().toLowerCase().matches(".*\\.(log|json|yaml)$")) {
+            archiveLogFile(file);
+          }
+        }
       }
+
+      logger.yaml(Level.DEBUG, ExecutionContext.getRecordsBag());
+    }
+    catch (final Throwable t) {
+      logger.exception(t);
     }
   }
 
@@ -149,23 +218,6 @@ public class Application extends Loggable implements ServletContextListener {
       }
     }
   }
-
-//  private void processServiceImplementor(final Class<?> type) throws InstantiationException, IllegalAccessException {
-//
-//    final WebService annotation = type.getAnnotation(WebService.class);
-//
-//    if (ServiceProperties.class.isAssignableFrom(type)) {
-//      final ServiceProperties serviceImplementor = (ServiceProperties) type.newInstance();
-//
-//      serviceImplementor.set(
-//          annotation.serviceName(),
-//          annotation.name(),
-//          annotation.endpointInterface());
-//
-//      ExecutionContext.getServiceManager().addService(serviceImplementor);
-//    }
-//  }
-
 
   private void configureHousekeeping() {
     logger.in();

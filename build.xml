@@ -138,10 +138,9 @@ app.proficy.charset=0123456789ABCDEF
 app.proficy.separator=-
 app.proficy.group-count=4
 app.proficy.group-length=4
-app.proficy.product-lines=PRO,A,B,D
+app.proficy.product-lines=AD,AA,BD,ST,CUSTOM,CSM,CY,DE,FS,GEIP_HostID,IFC,DR,II,SO,OH,OR,SE,PC,HD,HM,PM,PAD,VM,MD,AG,BA,CS,CM,DM,DS,DV,CI,IC,IF,FT,HS,HA,KC,ME,MO,EE,OE,PA,PO,PS,PL,PSC,SC,SP,PSF,SM,TR,VS,WS,WF,QS,SalesDemo,AllProducts,SS,TM,Test Product Line,WH,WN
         </echo>
     </target>
-
 
     <!-- BUILD -->
     <target name="build"
