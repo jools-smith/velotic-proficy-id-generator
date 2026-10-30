@@ -19,10 +19,10 @@ import java.util.stream.Stream;
     "housekeepingFrequency",
     "user",
     "versionDetails",
+    "proficyConfiguration",
     "hash"
 })
 public final class ApplicationProperties extends Loggable {
-//  private static final LoggingFactory logger = LoggingFactory.create(ApplicationProperties.class);
 
   public enum Items {
     TIMESTAMP("build.timestamp"),
