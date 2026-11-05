@@ -24,7 +24,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
+import java.io.*;
+import java.nio.file.*;
+import java.util.zip.*;
+import java.io.IOException;
+import java.net.URI;
+import java.nio.file.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 /**
  * The root of the service, registered as a listener will set stuff up when the context is initialized
  */
@@ -66,6 +74,31 @@ public class Application extends Loggable implements ServletContextListener {
       }
       catch (final Throwable t) {
         logger.exception(t);
+      }
+    }
+  }
+
+   static void addFiles(final Path zipFile, List<Path> files) throws IOException {
+
+    URI uri = URI.create("jar:" + zipFile.toUri());
+
+    final Map<String, String> env = new HashMap<String, String>() {
+      {
+        this.put("create", "true");
+      }
+    };
+    // create ZIP if it doesn't exist
+
+    try (final FileSystem zipFs = FileSystems.newFileSystem(uri, env)) {
+
+      for (Path file : files) {
+        Path destination = zipFs.getPath("/" + file.getFileName());
+
+        Files.copy(
+            file,
+            destination,
+            StandardCopyOption.REPLACE_EXISTING
+        );
       }
     }
   }
@@ -122,6 +155,10 @@ public class Application extends Loggable implements ServletContextListener {
 
   private static String getCurrentLogFileName() {
     return LocalDate.now() + ".revenera.log";
+  }
+
+  private static String getCurrentArchiveFileName() {
+    return LocalDate.now() + ".revenera.zip";
   }
 
   private void logging() {

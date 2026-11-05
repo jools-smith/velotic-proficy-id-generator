@@ -84,7 +84,8 @@ public class DiagnosticsFactory extends Loggable implements TransactionManagemen
 
         Optional.ofNullable(response).ifPresent(e -> put(TransTypes.response, response));
 
-        Optional.ofNullable(payload).ifPresent(e -> put(TransTypes.payload, request));
+        /// fix jps 2026.11.05 use payload not response
+        Optional.ofNullable(payload).ifPresent(e -> put(TransTypes.payload, payload));
       }
     }));
   }

@@ -9,8 +9,6 @@ import com.revenera.gcs.ProficyConfiguration;
 import com.revenera.gcs.logging.Level;
 import com.revenera.gcs.utils.HandyBag;
 import com.revenera.gcs.utils.Serializer;
-import com.sun.media.sound.WaveExtensibleFileReader;
-import jdk.jfr.internal.LogLevel;
 import org.apache.commons.lang3.SystemProperties;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -18,7 +16,7 @@ import javax.jws.WebService;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
@@ -29,30 +27,7 @@ import java.util.stream.Collectors;
     wsdlLocation = "WEB-INF/wsdl/schema/IdGeneratorService.wsdl")
 public class IdGeneratorServiceImpl extends ServiceProperties implements IdGeneratorServiceInterface {
 
-  /** static stuff... */
-  private static String makeUuidBasedId(final String prefix) {
-    return prefix + UUID.randomUUID()
-        .toString()
-        .replace("-", "_");
-  }
-
-  private static String makeFulfilmentId() {
-    return makeUuidBasedId("FID_");
-  }
-
-  private static String makeConsolidatedId() {
-    return makeUuidBasedId("CID_");
-  }
-
-  private static String makeStandardId() {
-    return String.join("-",
-        UUID.randomUUID()
-            .toString()
-            .replace("-", "")
-            .split("(?<=\\G.{4})"));
-  }
-
-  private static Id makeId(final String value) {
+  private static Id makeLicensingId(final String value) {
     return new Id() {
       {
         this.id = value;
@@ -60,23 +35,21 @@ public class IdGeneratorServiceImpl extends ServiceProperties implements IdGener
     };
   }
 
-  /** IdGeneratorServiceImpl */
+  /** requires execution context */
+  private final Function<IStringGenerator.Type, Id> create_licensing_identifier = type ->
+      makeLicensingId(ExecutionContext.getStringGenerator().generateStandard(type));
 
   public IdGeneratorServiceImpl() {
     logger.me(this);
   }
 
   @Override
-  public PingResponse ping(final PingRequest payload) throws IdGeneratorException {
+  public PingResponse ping(final PingRequest request) throws IdGeneratorException {
     logger.in();
 
     try (final ExecutionContext ctx = new ExecutionContext()) {
-      ///register the payload
-      ExecutionContext.injectRequest(payload);
-
-      //TODO:debuggery...
-      ExecutionContext.injectPayload("hello");
-      ExecutionContext.injectPayload("world");
+      ///register the request
+      ExecutionContext.injectRequest(request);
 
       /// register the response
       return ExecutionContext.injectResponse(new PingResponse() {
@@ -109,16 +82,15 @@ public class IdGeneratorServiceImpl extends ServiceProperties implements IdGener
     }
   }
 
-
-
   @Override
-  public Id generateEntitlementID(final Entitlement payload) throws IdGeneratorException {
+  public Id generateEntitlementID(final Entitlement request) throws IdGeneratorException {
     logger.in();
     try (final ExecutionContext ctx = new ExecutionContext()) {
-      ///register the payload
-      ExecutionContext.injectRequest(payload);
+      ///register the request
+      ExecutionContext.injectRequest(request);
 
-      return ExecutionContext.injectResponse(makeId(makeStandardId()));
+      return ExecutionContext.injectResponse(
+          create_licensing_identifier.apply(IStringGenerator.Type.Entitlement));
     }
     catch (final Throwable t) {
       logger.exception(t);
@@ -130,35 +102,38 @@ public class IdGeneratorServiceImpl extends ServiceProperties implements IdGener
   }
 
   @Override
-  public Id generateLineItemID(final EntitlementLineItem payload) throws IdGeneratorException {
+  public Id generateLineItemID(final EntitlementLineItem request) throws IdGeneratorException {
     logger.in();
     try (final ExecutionContext ctx = new ExecutionContext()) {
+      final IStringGenerator generator = ExecutionContext.getStringGenerator();
+
       ///register the payload
-      ExecutionContext.injectRequest(payload);
+      ExecutionContext.injectRequest(request);
       final ProficyConfiguration proficyConfiguration = ExecutionContext
           .getApplicationProperties()
           .getProficyConfiguration();
       logger.json(Level.DEBUG, proficyConfiguration);
 
-      final List<String> lines =  payload.getEntitledProducts()
+      final List<String> lines =  request.getEntitledProducts()
               .stream()
               .map(x -> x.getProductCategory().getValue().getName())
               .collect(Collectors.toList());
       logger.json(Level.DEBUG, lines);
 
-      // is there a product line in common
-      final boolean isProficy = !Collections.disjoint(proficyConfiguration.getProductLines(),lines);
-
-      return ExecutionContext.injectResponse(makeId(
-          isProficy ?
-          // this is proficy
-          ExecutionContext.getStringGenerator().generate(
+      /// if there is no product line in common (disjoint!)
+      if (Collections.disjoint(proficyConfiguration.getProductLines(),lines)) {
+        return ExecutionContext.injectResponse(
+            create_licensing_identifier.apply(IStringGenerator.Type.Activation));
+      }
+      else {
+        /// PROFICY
+        return ExecutionContext.injectResponse(makeLicensingId(
+            generator.generateGroups(
               proficyConfiguration.getCharset(),
               proficyConfiguration.getSeparator(),
               proficyConfiguration.getGroupCount(),
-              proficyConfiguration.getGroupLength()) :
-          // otherwise us the standard one
-          makeStandardId()));
+              proficyConfiguration.getGroupLength())));
+      }
     }
     catch (final Throwable t) {
       logger.exception(t);
@@ -170,13 +145,14 @@ public class IdGeneratorServiceImpl extends ServiceProperties implements IdGener
   }
 
   @Override
-  public Id generateWebRegKey(final BulkEntitlement payload) throws IdGeneratorException {
+  public Id generateWebRegKey(final BulkEntitlement request) throws IdGeneratorException {
     logger.in();
     try (final ExecutionContext ctx = new ExecutionContext()) {
       ///register the payload
-      ExecutionContext.injectRequest(payload);
+      ExecutionContext.injectRequest(request);
 
-      return ExecutionContext.injectResponse(makeId(makeStandardId()));
+      return ExecutionContext.injectResponse(
+          create_licensing_identifier.apply(IStringGenerator.Type.Web));
     }
     catch (final Throwable t) {
       logger.exception(t);
@@ -188,13 +164,14 @@ public class IdGeneratorServiceImpl extends ServiceProperties implements IdGener
   }
 
   @Override
-  public Id generateMaintenanceItemID(final MaintenanceItem payload) throws IdGeneratorException {
+  public Id generateMaintenanceItemID(final MaintenanceItem request) throws IdGeneratorException {
     logger.in();
     try (final ExecutionContext ctx = new ExecutionContext()) {
       ///register the payload
-      ExecutionContext.injectRequest(payload);
+      ExecutionContext.injectRequest(request);
 
-      return ExecutionContext.injectResponse(makeId(makeStandardId()));
+      return ExecutionContext.injectResponse(
+          create_licensing_identifier.apply(IStringGenerator.Type.Maintenance));
     }
     catch (final Throwable t) {
       logger.exception(t);
@@ -206,13 +183,14 @@ public class IdGeneratorServiceImpl extends ServiceProperties implements IdGener
   }
 
   @Override
-  public Id generateFulfillmentID(final FulfillmentRecord payload) throws IdGeneratorException {
+  public Id generateFulfillmentID(final FulfillmentRecord request) throws IdGeneratorException {
     logger.in();
     try (final ExecutionContext ctx = new ExecutionContext()) {
       ///register the payload
-      ExecutionContext.injectRequest(payload);
+      ExecutionContext.injectRequest(request);
 
-      return ExecutionContext.injectResponse(makeId(makeFulfilmentId()));
+      return ExecutionContext.injectResponse(
+          create_licensing_identifier.apply(IStringGenerator.Type.Fulfilment));
     }
     catch (final Throwable t) {
       logger.exception(t);
@@ -224,13 +202,14 @@ public class IdGeneratorServiceImpl extends ServiceProperties implements IdGener
   }
 
   @Override
-  public Id generateConsolidatedLicenseID(final ConsolidatedLicenseRecord payload) throws IdGeneratorException {
+  public Id generateConsolidatedLicenseID(final ConsolidatedLicenseRecord request) throws IdGeneratorException {
     logger.in();
     try (final ExecutionContext ctx = new ExecutionContext()) {
       ///register the payload
-      ExecutionContext.injectRequest(payload);
+      ExecutionContext.injectRequest(request);
 
-      return ExecutionContext.injectResponse(makeId(makeConsolidatedId()));
+      return ExecutionContext.injectResponse(
+          create_licensing_identifier.apply(IStringGenerator.Type.Consolidated));
     }
     catch (final Throwable t) {
       logger.exception(t);
