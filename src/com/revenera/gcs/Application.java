@@ -24,15 +24,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import java.io.*;
 import java.nio.file.*;
-import java.util.zip.*;
-import java.io.IOException;
 import java.net.URI;
-import java.nio.file.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+
 /**
  * The root of the service, registered as a listener will set stuff up when the context is initialized
  */
@@ -54,6 +52,7 @@ public class Application extends Loggable implements ServletContextListener {
           .getLoggingEcho());
     }
   }
+  private final FileManager fileManager = new FileManager();
 
   private final Housekeeper housekeeper = new Housekeeper();
 
@@ -78,60 +77,6 @@ public class Application extends Loggable implements ServletContextListener {
     }
   }
 
-   static void addFiles(final Path zipFile, List<Path> files) throws IOException {
-
-    URI uri = URI.create("jar:" + zipFile.toUri());
-
-    final Map<String, String> env = new HashMap<String, String>() {
-      {
-        this.put("create", "true");
-      }
-    };
-    // create ZIP if it doesn't exist
-
-    try (final FileSystem zipFs = FileSystems.newFileSystem(uri, env)) {
-
-      for (Path file : files) {
-        Path destination = zipFs.getPath("/" + file.getFileName());
-
-        Files.copy(
-            file,
-            destination,
-            StandardCopyOption.REPLACE_EXISTING
-        );
-      }
-    }
-  }
-
-  public void archiveLogFile(final Path source) throws IOException {
-    final Path zip = source.resolveSibling(source.getFileName() + ".zip");
-
-    try (final ZipOutputStream out = new ZipOutputStream(Files.newOutputStream(zip))) {
-      out.putNextEntry(new ZipEntry(source.getFileName().toString()));
-
-      Files.copy(source, out);
-
-      logger.get().info("archived {0} to {1}", source.getFileName(), zip.getFileName());
-    }
-
-    Files.delete(source);
-  }
-
-  private void serializeToLogPath(final String filename, final List<String> content) throws IOException {
-    //noinspection unused
-
-    if (ExecutionContext.getLoggingManager().willEcho()) {
-      final String root = ExecutionContext.getLogPath().toRealPath().toString();
-
-      if (Files.exists(Paths.get(root))) {
-        FileUtils.writeLines(
-            Paths.get(root, filename).toAbsolutePath().toFile().getAbsoluteFile(),
-            content,
-            true);
-      }
-    }
-  }
-
   private void polling() {
     //noinspection unused
     try (final ExecutionContext ctx = new ExecutionContext()) {
@@ -141,7 +86,7 @@ public class Application extends Loggable implements ServletContextListener {
           final Map.Entry<Object, Object> content = ExecutionContext.getTransactionManager().pollTransactions();
 
           if (content != null) {
-            serializeToLogPath(content.getKey() + ".yaml",
+            fileManager.serializeFile(content.getKey() + ".yaml",
                 Collections.singletonList(
                     Serializer.safeSerializeYaml(content.getValue())));
           }
@@ -151,14 +96,6 @@ public class Application extends Loggable implements ServletContextListener {
         logger.exception(t);
       }
     }
-  }
-
-  private static String getCurrentLogFileName() {
-    return LocalDate.now() + ".revenera.log";
-  }
-
-  private static String getCurrentArchiveFileName() {
-    return LocalDate.now() + ".revenera.zip";
   }
 
   private void logging() {
@@ -172,7 +109,7 @@ public class Application extends Loggable implements ServletContextListener {
         }
 
         if (!messages.isEmpty()) {
-          serializeToLogPath(getCurrentLogFileName(), messages);
+          fileManager.serializeLogFile(messages);
         }
       }
       catch (final Throwable t) {
@@ -186,29 +123,7 @@ public class Application extends Loggable implements ServletContextListener {
     //noinspection unused
     try (final ExecutionContext ctx = new ExecutionContext()) {
 
-      final Path loggingRoot = ExecutionContext.getLogPath().toRealPath();
-
-      final String currentLogFileName = getCurrentLogFileName().toLowerCase();
-
-      final List<Path> files;
-
-      /// try resources
-      try (final Stream<Path> stream = Files.list(loggingRoot)) {
-        files = stream
-            .filter(Files::isRegularFile)
-            .filter(path -> !path
-                .getFileName()
-                .toString()
-                .toLowerCase()
-                .equals(currentLogFileName))
-            .filter(path -> !path
-                .getFileName()
-                .toString()
-                .toLowerCase()
-                .matches(".*\\.(zip)$"))
-            .map(Path::toAbsolutePath)
-            .collect(Collectors.toList());
-      }
+      final List<Path> files = fileManager.getInactiveFiles();
 
       logger.get().debug("files located {0} {1}",
           files.size(),
@@ -217,26 +132,41 @@ public class Application extends Loggable implements ServletContextListener {
               .collect(Collectors.joining("\n")));
 
       if (!files.isEmpty()) {
-        final Instant age = Instant.now().minus(Duration.ofDays(31));
+        final Instant age = Instant.now().minus(
+            Duration.ofDays(
+                ExecutionContext.getApplicationProperties().getHousekeepingRetention()));
 
         for (final Path file : files) {
+          final String filename =  file.getFileName().toString();
 
           /// delete anything older than a month(ish)
           if (Files.getLastModifiedTime(file).toInstant().isBefore(age)) {
             Files.delete(file);
-            logger.get().info("deleted {0}", file.getFileName());
-
+            logger.get().info("deleted {0}", filename);
             continue;
           }
 
-          /// if it's an old non-zip-file then archive it
-          if (file.getFileName().toString().toLowerCase().matches(".*\\.(log|json|yaml)$")) {
-            archiveLogFile(file);
+          if (file.toString().matches(".*\\.(json|yaml)$")) {
+            fileManager.addFileToZipArchive(file);
+            logger.get().info("archived {0}", filename);
+            continue;
           }
+
+          if (file.toString().matches(".*\\.(log)$")) {
+            fileManager.compressFile(file);
+            logger.get().info("zipped {0}", filename);
+            continue;
+          }
+
+          ///not sure what file this is!
+          logger.get().debug("not processed {0}", filename);
         }
       }
+      else {
+        logger.get().debug("no files found for housekeeping");
+      }
 
-      logger.yaml(Level.DEBUG, ExecutionContext.getRecordsBag());
+//      logger.yaml(Level.DEBUG, ExecutionContext.getRecordsBag());
     }
     catch (final Throwable t) {
       logger.exception(t);

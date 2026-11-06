@@ -17,6 +17,7 @@ import java.util.stream.Stream;
     "loggingLevel",
     "loggingEcho",
     "housekeepingFrequency",
+    "housekeepingRetention",
     "user",
     "versionDetails",
     "proficyConfiguration",
@@ -38,6 +39,7 @@ public final class ApplicationProperties extends Loggable {
     LOGGING_THRESHOLD("app.logging.level"),
     LOGGING_ECHO("app.logging.echo"),
     HOUSEKEEPING_INTERVAL("app.housekeeping"),
+    HOUSEKEEPING_RETENTION("app.housekeeping.retention"),
     LANDING_HEADER("app.landing.header"),
     LANDING_TITLE("app.landing.title"),
     PROFICY_SEPARATOR("app.proficy.separator"),
@@ -46,7 +48,7 @@ public final class ApplicationProperties extends Loggable {
     PROFICY_GROUP_LENGTH("app.proficy.group-length"),
     PROFICY_PRODUCT_LINES("app.proficy.product-lines");
 
-    final String name;
+    public final String name;
     Items(String name) {
       this.name = name;
     }
@@ -106,6 +108,10 @@ public final class ApplicationProperties extends Loggable {
 
   public int getHousekeepingFrequency() {
     return Integer.parseInt(this.properties.get(Items.HOUSEKEEPING_INTERVAL).toString());
+  }
+
+  public int getHousekeepingRetention() {
+    return Integer.parseInt(this.properties.get(Items.HOUSEKEEPING_RETENTION).toString());
   }
 
   public String getLoggingLevel() {

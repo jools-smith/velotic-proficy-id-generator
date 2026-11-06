@@ -3,6 +3,7 @@ package com.revenera.gcs.webservices;
 import com.flexnet.external.type.*;
 import com.flexnet.external.webservice.idgenerator.IdGeneratorException;
 import com.flexnet.external.webservice.idgenerator.IdGeneratorServiceInterface;
+import com.revenera.gcs.ApplicationProperties;
 import com.revenera.gcs.Beans;
 import com.revenera.gcs.ExecutionContext;
 import com.revenera.gcs.ProficyConfiguration;
@@ -14,6 +15,7 @@ import org.apache.commons.lang3.SystemUtils;
 
 import javax.jws.WebService;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -54,11 +56,20 @@ public class IdGeneratorServiceImpl extends ServiceProperties implements IdGener
       /// register the response
       return ExecutionContext.injectResponse(new PingResponse() {
         {
+          final ApplicationProperties props = ExecutionContext.getApplicationProperties();
           this.str = Serializer.safeSerializeYaml(new HandyBag()
               .withJoined("version",
-                  ExecutionContext.getApplicationProperties().getVersion(),
-                  ExecutionContext.getApplicationProperties().getReleaseDate(),
-                  ExecutionContext.getApplicationProperties().getReleaseTime())
+                  props.getVersion(),
+                  props.getReleaseDate(),
+                  props.getReleaseTime())
+              .withJoined("proficy",
+                  props.getItem(ApplicationProperties.Items.PROFICY_CHARSET),
+                  props.getItem(ApplicationProperties.Items.PROFICY_SEPARATOR),
+                  props.getItem(ApplicationProperties.Items.PROFICY_GROUP_COUNT),
+                  props.getItem(ApplicationProperties.Items.PROFICY_GROUP_LENGTH),
+                  props.getItem(ApplicationProperties.Items.PROFICY_PRODUCT_LINES),
+                  props.getHousekeepingFrequency(),
+                  props.getHousekeepingRetention())
               .withJoined("system",
                   SystemProperties.getOsName(),
                   SystemProperties.getOsVersion(),
