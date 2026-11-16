@@ -110,7 +110,7 @@ public class LandingServlet extends HttpServlet {
       "            <tr><th>Environment</th><td>{6}&nbsp;&nbsp;({7}&nbsp;&nbsp;{8})</td></tr>\n" +
       "            <tr><th>Status</th><td><spanclass=\"status\">{9}&nbsp;&nbsp;{10}</span></td></tr>\n" +
       "            <tr><th>Java Runtime</th><td>{11}&nbsp;&nbsp;{12}&nbsp;&nbsp;({13})</td></tr>\n" +
-      "            <tr><th>Technologies</th><td>{14}</td></tr>\n" +
+      "            <tr><th>Product Lines Count</th><td>{14}</td></tr>\n" +
       "            <tr><th>Product Lines</th><td>{15}</td></tr>\n" +
       "            <tr><th>Diagnostics</th>\n"+
       "                <table>\n" +
@@ -172,9 +172,13 @@ public class LandingServlet extends HttpServlet {
           ///Java Runtime 11, 12, 13
           SystemUtils.JAVA_VM_NAME, SystemUtils.JAVA_VERSION, SystemUtils.JAVA_CLASS_VERSION,
           ///Technologies 14
-          "== NA ==",
+          /// TODO: remove this after testing
+          String.format("%d", ExecutionContext
+              .getApplicationProperties()
+              .getProficyConfiguration()
+              .getProductLines().size()),
           ///Product Lines 15
-          String.join("; ", ExecutionContext
+          String.join(" | ", ExecutionContext
               .getApplicationProperties()
               .getProficyConfiguration()
               .getProductLines()),
