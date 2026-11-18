@@ -63,11 +63,11 @@ public class IdGeneratorServiceImpl extends ServiceProperties implements IdGener
                   props.getReleaseDate(),
                   props.getReleaseTime())
               .withJoined("proficy",
-                  props.getItem(ApplicationProperties.Items.PROFICY_CHARSET),
-                  props.getItem(ApplicationProperties.Items.PROFICY_SEPARATOR),
-                  props.getItem(ApplicationProperties.Items.PROFICY_GROUP_COUNT),
-                  props.getItem(ApplicationProperties.Items.PROFICY_GROUP_LENGTH),
-                  props.getItem(ApplicationProperties.Items.PROFICY_PRODUCT_LINES),
+                  props.getProficyConfiguration().getCharset(),
+                  props.getProficyConfiguration().getSeparator(),
+                  props.getProficyConfiguration().getGroupCount(),
+                  props.getProficyConfiguration().getGroupLength(),
+                  props.getProficyConfiguration().getProductLines(),
                   props.getHousekeepingFrequency(),
                   props.getHousekeepingRetention())
               .withJoined("system",

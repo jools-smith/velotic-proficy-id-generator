@@ -161,6 +161,10 @@ public class ExecutionContext implements AutoCloseable {
     return Beans.getLogPath();
   }
 
+  public static Path getResourcePath(final String... parts) {
+    return Beans.getResourcePath(parts);
+  }
+
   public static HandyBag getRecordsBag() {
     final HandyBag bag = new HandyBag();
     Beans.diagnosticsFactory.getRecords().stream()

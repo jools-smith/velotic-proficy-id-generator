@@ -1,14 +1,31 @@
 package com.revenera.gcs;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
-public abstract class ProficyConfiguration {
+public class ProficyConfiguration {
+  @JsonProperty
+  String version;
+
+  @JsonProperty
   String charset;
+
+  @JsonProperty
   String separator;
+
+  @JsonProperty
   int groupCount;
+
+  @JsonProperty
   int groupLength;
+
+  @JsonProperty
   List<String> productLines;
 
+  public String getVersion() {
+    return version;
+  }
 
   public String getCharset() {
     return charset;

@@ -1,0 +1,22 @@
+{
+  "version": "2026-11-18:A",
+  "charset": "0123456789ABCDEF",
+  "separator" :"-",
+  "groupCount": 4,
+  "groupLength":4,
+  "productLines": [
+    "Proficy HMI/SCADA - CIMPLICITY",
+    "Proficy Historian Analysis",
+    "Proficy for Manufacturing Discrete",
+    "Proficy Mobile",
+    "Proficy Historian",
+    "Proficy HMI/SCADA - iFIX",
+    "HMI/SCADA - iFIX Complete",
+    "Proficy Agent",
+    "Proficy HMI/SCADA - iFIX Toolkits",
+    "Dream Report",
+    "Proficy Knowledge Center",
+    "Proficy HMI/SCADA - iClient",
+    "Proficy DataMart"
+  ]
+}

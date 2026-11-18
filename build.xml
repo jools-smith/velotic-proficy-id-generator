@@ -122,7 +122,7 @@
         <!-- this copy works -->
         <echo file="${build}/revenera.properties">
 build.version.major=1
-build.version.minor=1
+build.version.minor=2
 build.number=${build.number}
 build.timestamp=${build.timestamp}
 build.date=${build.date}
@@ -135,11 +135,6 @@ app.housekeeping=15
 app.housekeeping.retention=31
 app.landing.header=Revenera GCS Remote ID Generation Service
 app.landing.title=Velotic ID Generation Service for Proficy
-app.proficy.charset=0123456789ABCDEF
-app.proficy.separator=-
-app.proficy.group-count=4
-app.proficy.group-length=4
-app.proficy.product-lines=Proficy HMI/SCADA - CIMPLICITY,Proficy Historian Analysis,Proficy for Manufacturing Discrete,Proficy Mobile,Proficy Historian,Proficy HMI/SCADA - iFIX,HMI/SCADA - iFIX Complete,Proficy Agent,Proficy HMI/SCADA - iFIX Toolkits,Dream Report,Proficy Knowledge Center,Proficy HMI/SCADA - iClient,Proficy DataMart
         </echo>
     </target>
 
@@ -157,9 +152,14 @@ app.proficy.product-lines=Proficy HMI/SCADA - CIMPLICITY,Proficy Historian Analy
             <fileset dir="${build}" />
         </copy>
 
+        <copy file="${src}/ProficyConfiguration.json"
+              todir="${dist}/war/build/WEB-INF"/>
+
         <copy todir="${dist}/war/build/WEB-INF/wsdl/schema">
             <fileset dir="${schema-loc}" />
         </copy>
+
+
 
         <!-- 1. Load the file you just built to access major/minor versions -->
         <property file="${build}/revenera.properties" prefix="versioned"/>

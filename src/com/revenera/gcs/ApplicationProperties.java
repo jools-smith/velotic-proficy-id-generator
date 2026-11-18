@@ -2,11 +2,14 @@ package com.revenera.gcs;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.revenera.gcs.logging.Loggable;
+import com.revenera.gcs.utils.Serializer;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 
 @JsonPropertyOrder({
     "version",
@@ -41,12 +44,12 @@ public final class ApplicationProperties extends Loggable {
     HOUSEKEEPING_INTERVAL("app.housekeeping"),
     HOUSEKEEPING_RETENTION("app.housekeeping.retention"),
     LANDING_HEADER("app.landing.header"),
-    LANDING_TITLE("app.landing.title"),
-    PROFICY_SEPARATOR("app.proficy.separator"),
-    PROFICY_CHARSET("app.proficy.charset"),
-    PROFICY_GROUP_COUNT("app.proficy.group-count"),
-    PROFICY_GROUP_LENGTH("app.proficy.group-length"),
-    PROFICY_PRODUCT_LINES("app.proficy.product-lines");
+    LANDING_TITLE("app.landing.title");
+//    PROFICY_SEPARATOR("app.proficy.separator"),
+//    PROFICY_CHARSET("app.proficy.charset"),
+//    PROFICY_GROUP_COUNT("app.proficy.group-count"),
+//    PROFICY_GROUP_LENGTH("app.proficy.group-length"),
+//    PROFICY_PRODUCT_LINES("app.proficy.product-lines");
 
     public final String name;
     Items(String name) {
@@ -55,6 +58,8 @@ public final class ApplicationProperties extends Loggable {
   }
 
   private final Map<Items,Object> properties = new LinkedHashMap<>();
+
+  private final AtomicReference<ProficyConfiguration> proficyConfiguration = new AtomicReference<>();
 
   public ApplicationProperties() {
     logger.me(this);
@@ -145,20 +150,29 @@ public final class ApplicationProperties extends Loggable {
         .collect(Collectors.joining(" | "));
   }
 
-  public ProficyConfiguration getProficyConfiguration() {
-    return new ProficyConfiguration() {
-      {
-        this.charset = getItem(Items.PROFICY_CHARSET);
-        this.separator = getItem(Items.PROFICY_SEPARATOR);
-        this.groupCount = Integer.parseInt(getItem(Items.PROFICY_GROUP_COUNT));
-        this.groupLength = Integer.parseInt(getItem(Items.PROFICY_GROUP_LENGTH));
-        this.productLines = Arrays.asList(
-            properties.get(Items.PROFICY_PRODUCT_LINES)
-                .toString()
-                .split(",")
-        );
-      }
-    };
+  public ProficyConfiguration getProficyConfiguration() throws IOException {
+
+    if (this.proficyConfiguration.get() == null) {
+      this.proficyConfiguration.set(Serializer.deserialize(
+          ProficyConfiguration.class,
+          ExecutionContext.getResourcePath("ProficyConfiguration.json")));
+    }
+
+    return this.proficyConfiguration.get();
+
+//    return new ProficyConfiguration() {
+//      {
+//        this.charset = getItem(Items.PROFICY_CHARSET);
+//        this.separator = getItem(Items.PROFICY_SEPARATOR);
+//        this.groupCount = Integer.parseInt(getItem(Items.PROFICY_GROUP_COUNT));
+//        this.groupLength = Integer.parseInt(getItem(Items.PROFICY_GROUP_LENGTH));
+//        this.productLines = Arrays.asList(
+//            properties.get(Items.PROFICY_PRODUCT_LINES)
+//                .toString()
+//                .split(",")
+//        );
+//      }
+//    };
   }
 
   @SuppressWarnings("unused")

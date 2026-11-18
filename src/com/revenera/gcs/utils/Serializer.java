@@ -6,6 +6,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Path;
 import java.util.Base64;
 
 public class Serializer {
@@ -47,6 +48,10 @@ public class Serializer {
 
   public static String safeSerializeJsonIndented(final Object payload) {
     return serialize(json_mapper_indented, payload);
+  }
+
+  public static <T> T deserialize(final Class<T> type, final Path path) throws IOException {
+    return json_mapper.readValue(path.toFile(), type);
   }
 
   public static String safeSerializeYaml(final Object payload) {
