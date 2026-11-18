@@ -57,17 +57,19 @@ public class IdGeneratorServiceImpl extends ServiceProperties implements IdGener
       return ExecutionContext.injectResponse(new PingResponse() {
         {
           final ApplicationProperties props = ExecutionContext.getApplicationProperties();
+
+          final ProficyConfiguration pc = props.refreshProficyConfiguration();
           this.str = Serializer.safeSerializeYaml(new HandyBag()
               .withJoined("version",
                   props.getVersion(),
                   props.getReleaseDate(),
                   props.getReleaseTime())
               .withJoined("proficy",
-                  props.getProficyConfiguration().getCharset(),
-                  props.getProficyConfiguration().getSeparator(),
-                  props.getProficyConfiguration().getGroupCount(),
-                  props.getProficyConfiguration().getGroupLength(),
-                  props.getProficyConfiguration().getProductLines(),
+                  pc.getCharset(),
+                  pc.getSeparator(),
+                  pc.getGroupCount(),
+                  pc.getGroupLength(),
+                  pc.getProductLines(),
                   props.getHousekeepingFrequency(),
                   props.getHousekeepingRetention())
               .withJoined("system",

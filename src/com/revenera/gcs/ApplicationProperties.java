@@ -150,29 +150,22 @@ public final class ApplicationProperties extends Loggable {
         .collect(Collectors.joining(" | "));
   }
 
-  public ProficyConfiguration getProficyConfiguration() throws IOException {
+  public ProficyConfiguration refreshProficyConfiguration() throws IOException {
 
-    if (this.proficyConfiguration.get() == null) {
-      this.proficyConfiguration.set(Serializer.deserialize(
-          ProficyConfiguration.class,
-          ExecutionContext.getResourcePath("ProficyConfiguration.json")));
-    }
+    this.proficyConfiguration.set(Serializer.deserialize(
+        ProficyConfiguration.class,
+        ExecutionContext.getResourcePath("ProficyConfiguration.json")));
 
     return this.proficyConfiguration.get();
+  }
 
-//    return new ProficyConfiguration() {
-//      {
-//        this.charset = getItem(Items.PROFICY_CHARSET);
-//        this.separator = getItem(Items.PROFICY_SEPARATOR);
-//        this.groupCount = Integer.parseInt(getItem(Items.PROFICY_GROUP_COUNT));
-//        this.groupLength = Integer.parseInt(getItem(Items.PROFICY_GROUP_LENGTH));
-//        this.productLines = Arrays.asList(
-//            properties.get(Items.PROFICY_PRODUCT_LINES)
-//                .toString()
-//                .split(",")
-//        );
-//      }
-//    };
+  public ProficyConfiguration getProficyConfiguration() throws IOException {
+    if (this.proficyConfiguration.get() == null) {
+      return refreshProficyConfiguration();
+    }
+    else {
+      return this.proficyConfiguration.get();
+    }
   }
 
   @SuppressWarnings("unused")
