@@ -43,7 +43,7 @@ public final class HandyBag extends LinkedHashMap<String, Object> {
   @JsonIgnore
   public HandyBag withJoined(final String key, final Object... values) {
     put(key, Stream.of(values)
-        .map(Object::toString)
+        .map(String::valueOf)
         .collect(Collectors.joining("|")));
 
     return this;

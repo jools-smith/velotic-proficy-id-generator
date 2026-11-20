@@ -120,7 +120,7 @@ public class LandingServlet extends HttpServlet {
       "            </tr>\n" +
       "        </table>\n" +
       "        <p style=\"margin-top:30px\">\n" +
-      "            This application provides licence generation facilities for multiple license technologies.\n" +
+      "            This application provides entitlement and activations Id facilities.\n" +
       "        </p>\n" +
       "    </div>\n" +
       "    <div class=\"footer\">\n" +
